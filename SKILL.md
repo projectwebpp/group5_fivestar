@@ -12,3 +12,4 @@ React Skill
 Laravel Skill
 MySQL / Database Skill
 Charts / Analytics Skill
+Responsive

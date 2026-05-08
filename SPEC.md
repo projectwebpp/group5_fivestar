@@ -753,12 +753,31 @@ This prioritization ensures a minimum viable product (MVP) with essential expens
 **Build an Expense Tracker for individual users to accurately monitor monthly spending and visualize financial status.**
 **Problem Statement (Why):** To eliminate the risk of errors in manual financial aggregation and complex calculations, which often lead to inaccurate financial tracking.
 **Target Benefit:** Provide users with real-time monthly financial insights and a structured system for categorized expense management.
+**Responsive**
 
 ## Tech Stack
 
 Front: React(NodeJS TypeScript)
 Back: Laravel(PHP)
 DB: MySQL
+Auth:jwt
+Deploy:vervel
+
+## Skill
+
+CRUD
+Categories
+Monthly Summary
+Charts
+Budget Alert
+CSV Export
+Recurring Expenses
+Multi-currency
+React Skill
+Laravel Skill
+MySQL / Database Skill
+Charts / Analytics Skill
+Responsive
 
 Expense Tracker - Data Models Design
 
