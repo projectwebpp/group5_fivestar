@@ -759,3 +759,391 @@ This prioritization ensures a minimum viable product (MVP) with essential expens
 Front: React(NodeJS TypeScript)
 Back: Laravel(PHP)
 DB: MySQL
+
+Expense Tracker - Data Models Design
+
+1. Core Data Models
+   1.1 Expense Model
+   interface Expense {
+   id: string; // Unique identifier (UUID or auto-increment)
+   amount: number; // Expense amount (in THB or currency)
+   description: string; // Expense description/name
+   category: string; // Category ID reference
+   date: Date; // Date of expense
+   createdAt: Date; // Timestamp when created
+   updatedAt: Date; // Timestamp when last updated
+   notes?: string; // Optional additional notes
+   tags?: string[]; // Optional additional tags
+   isRecurring?: boolean; // Flag for recurring expenses
+   recurringId?: string; // Reference to recurring expense template
+   }
+
+Database Table: expenses
+
+| Column      | Type          | Constraints               |
+| ----------- | ------------- | ------------------------- |
+| id          | UUID/INT      | PRIMARY KEY               |
+| amount      | DECIMAL(10,2) | NOT NULL                  |
+| description | VARCHAR(255)  | NOT NULL                  |
+| category_id | UUID/INT      | NOT NULL, FOREIGN KEY     |
+| date        | DATE          | NOT NULL                  |
+| notes       | TEXT          | NULL                      |
+| created_at  | TIMESTAMP     | DEFAULT CURRENT_TIMESTAMP |
+| updated_at  | TIMESTAMP     | DEFAULT CURRENT_TIMESTAMP |
+
+1.2 Category Model
+interface Category {
+id: string; // Unique identifier
+name: string; // Category name (e.g., "Food", "Transport")
+description?: string; // Optional description
+color?: string; // Color code for UI display (HEX: #FF5733)
+icon?: string; // Icon identifier for display
+budget?: number; // Optional monthly budget
+createdAt: Date; // Created timestamp
+}
+
+Database Table: categories
+
+| Column      | Type          | Constraints      |
+| ----------- | ------------- | ---------------- |
+| id          | UUID/INT      | PRIMARY KEY      |
+| name        | VARCHAR(50)   | NOT NULL, UNIQUE |
+| description | TEXT          | NULL             |
+| color       | VARCHAR(7)    | NULL (HEX color) |
+| icon        | VARCHAR(50)   | NULL             |
+| budget      | DECIMAL(10,2) | NULL             |
+| created_at  | TIMESTAMP     | DEFAULT NOW()    |
+
+Default Categories:
+
+🍔 Food (อาหาร)
+🚗 Transport (ขนส่ง)
+🏠 Housing (ที่อยู่อาศัย)
+📚 Education (การศึกษา)
+💊 Health (สุขภาพ)
+🎮 Entertainment (ความบันเทิง)
+💳 Shopping (ช้อปปิ้ง)
+🔌 Utilities (สาธารณูปโภค)
+💼 Business (ธุรกิจ)
+🎁 Other (อื่นๆ)
+
+1.3 Recurring Expense Model
+interface RecurringExpense {
+id: string; // Unique identifier
+expenseId: string; // Reference to expense template
+frequency: "daily" | "weekly" | "monthly" | "yearly";
+startDate: Date; // When recurring starts
+endDate?: Date; // Optional end date
+nextDueDate: Date; // Next scheduled date
+isActive: boolean; // Whether this is still active
+createdAt: Date;
+}
+
+Database Table: recurring_expenses
+
+| Column        | Type      | Constraints           |
+| ------------- | --------- | --------------------- |
+| id            | UUID/INT  | PRIMARY KEY           |
+| expense_id    | UUID/INT  | NOT NULL, FOREIGN KEY |
+| frequency     | ENUM      | NOT NULL              |
+| start_date    | DATE      | NOT NULL              |
+| end_date      | DATE      | NULL                  |
+| next_due_date | DATE      | NOT NULL              |
+| is_active     | BOOLEAN   | DEFAULT TRUE          |
+| created_at    | TIMESTAMP | DEFAULT NOW()         |
+
+2. Calculated/Aggregate Models (Not persisted, calculated on-the-fly)
+   2.1 Monthly Summary Model
+   interface MonthlySummary {
+   month: string; // Format: "YYYY-MM"
+   year: number; // Year number
+   totalExpense: number; // Sum of all expenses
+   categoryBreakdown: {
+   categoryName: string;
+   amount: number;
+   percentage: number;
+   }[];
+   averageDailyExpense: number; // Total / days in month
+   averageMonthlyExpense?: number;// For trend analysis
+   }
+
+2.2 Category Summary Model
+interface CategorySummary {
+categoryId: string;
+categoryName: string;
+categoryColor: string;
+totalAmount: number; // Sum for period
+percentage: number; // % of total
+transactionCount: number; // Number of transactions
+averagePerTransaction: number; // Average transaction size
+budget?: number; // Monthly budget if set
+budgetUsedPercentage?: number; // % of budget used
+budgetRemaining?: number; // Budget - spent
+isOverBudget?: boolean; // Flag if over budget
+}
+
+2.3 Date Range Summary Model
+interface DateRangeSummary {
+startDate: Date;
+endDate: Date;
+daysInRange: number;
+totalExpense: number;
+averageDailyExpense: number;
+totalTransactions: number;
+categoryBreakdown: CategorySummary[];
+dailyBreakdown?: {
+date: Date;
+amount: number;
+}[];
+}
+
+2.4 Expense Report Model
+interface ExpenseReport {
+reportType: "monthly" | "weekly" | "custom";
+period: string; // e.g., "January 2025" or "2025-01-01 to 2025-01-31"
+generatedAt: Date;
+summary: {
+totalExpense: number;
+totalTransactions: number;
+averagePerDay: number;
+averagePerTransaction: number;
+};
+categoryData: CategorySummary[];
+topCategories: CategorySummary[]; // Top 5 by amount
+trends?: {
+comparison: "vs previous month" | "vs same month last year";
+percentageChange: number;
+};
+}
+
+3. Filter/Query Models
+   3.1 Expense Filter Model
+   interface ExpenseFilter {
+   startDate?: Date; // Filter from date
+   endDate?: Date; // Filter to date
+   categoryId?: string; // Filter by category
+   categoryIds?: string[]; // Filter by multiple categories
+   minAmount?: number; // Minimum amount filter
+   maxAmount?: number; // Maximum amount filter
+   searchText?: string; // Search in description/notes
+   sortBy?: "date" | "amount" | "category";
+   sortOrder?: "asc" | "desc";
+   limit?: number; // Pagination limit
+   offset?: number; // Pagination offset
+   }
+
+3.2 Budget Alert Model
+interface BudgetAlert {
+id: string;
+categoryId: string;
+threshold: number; // Alert when reached % of budget
+isActive: boolean;
+lastAlertDate?: Date;
+alertType: "warning" | "critical"; // 75% or 100%
+}
+
+4. Relationship Diagram
+   ┌─────────────────┐
+   │ CATEGORIES │
+   ├─────────────────┤
+   │ id (PK) │
+   │ name │
+   │ color │
+   │ icon │
+   │ budget │
+   └────────┬────────┘
+   │
+   │ (1:N)
+   │
+   ┌────────▼────────────────────┐
+   │ EXPENSES │
+   ├─────────────────────────────┤
+   │ id (PK) │
+   │ amount │
+   │ description │
+   │ category_id (FK) │
+   │ date │
+   │ recurring_id (FK, optional) │
+   │ notes │
+   │ created_at │
+   │ updated_at │
+   └────────┬────────────────────┘
+   │
+   │ (1:N)
+   │
+   ┌────────▼────────────────┐
+   │ RECURRING_EXPENSES │
+   ├─────────────────────────┤
+   │ id (PK) │
+   │ expense_id (FK) │
+   │ frequency │
+   │ start_date │
+   │ end_date (optional) │
+   │ next_due_date │
+   │ is_active │
+   └─────────────────────────┘
+
+5. Database Initialization Scripts
+   5.1 Create Tables (SQL)
+   -- Create Categories Table
+   CREATE TABLE categories (
+   id INTEGER PRIMARY KEY AUTO_INCREMENT,
+   name VARCHAR(50) NOT NULL UNIQUE,
+   description TEXT,
+   color VARCHAR(7),
+   icon VARCHAR(50),
+   budget DECIMAL(10, 2),
+   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   INDEX idx_name (name)
+   );
+
+-- Create Expenses Table
+CREATE TABLE expenses (
+id INTEGER PRIMARY KEY AUTO_INCREMENT,
+amount DECIMAL(10, 2) NOT NULL,
+description VARCHAR(255) NOT NULL,
+category_id INTEGER NOT NULL,
+date DATE NOT NULL,
+notes TEXT,
+recurring_id INTEGER,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE RESTRICT,
+FOREIGN KEY (recurring_id) REFERENCES recurring_expenses(id) ON DELETE SET NULL,
+INDEX idx_date (date),
+INDEX idx_category_id (category_id),
+INDEX idx_created_at (created_at)
+);
+
+-- Create Recurring Expenses Table
+CREATE TABLE recurring_expenses (
+id INTEGER PRIMARY KEY AUTO_INCREMENT,
+expense_id INTEGER NOT NULL,
+frequency ENUM('daily', 'weekly', 'monthly', 'yearly') NOT NULL,
+start_date DATE NOT NULL,
+end_date DATE,
+next_due_date DATE NOT NULL,
+is_active BOOLEAN DEFAULT TRUE,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+FOREIGN KEY (expense_id) REFERENCES expenses(id) ON DELETE CASCADE,
+INDEX idx_next_due_date (next_due_date),
+INDEX idx_is_active (is_active)
+);
+
+-- Create Budget Alerts Table
+CREATE TABLE budget_alerts (
+id INTEGER PRIMARY KEY AUTO_INCREMENT,
+category_id INTEGER NOT NULL,
+threshold INTEGER NOT NULL DEFAULT 75,
+is_active BOOLEAN DEFAULT TRUE,
+last_alert_date TIMESTAMP,
+alert_type ENUM('warning', 'critical') NOT NULL,
+FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE,
+INDEX idx_category_id (category_id)
+);
+
+5.2 Insert Default Categories
+INSERT INTO categories (name, icon, color, budget) VALUES
+('Food', '🍔', '#FF6B6B', 5000),
+('Transport', '🚗', '#4ECDC4', 2000),
+('Housing', '🏠', '#FFE66D', 10000),
+('Education', '📚', '#95E1D3', 3000),
+('Health', '💊', '#F38181', 2000),
+('Entertainment', '🎮', '#AA96DA', 2000),
+('Shopping', '💳', '#FCBAD3', 4000),
+('Utilities', '🔌', '#A8D8EA', 1500),
+('Business', '💼', '#C1D82F', 5000),
+('Other', '🎁', '#999999', NULL);
+
+6. TypeScript Interfaces Summary
+   // Main Data Models
+
+- Expense
+- Category
+- RecurringExpense
+
+// Aggregate Models
+
+- MonthlySummary
+- CategorySummary
+- DateRangeSummary
+- ExpenseReport
+
+// Query/Filter Models
+
+- ExpenseFilter
+- BudgetAlert
+
+// Response Models
+
+- ApiResponse<T>
+- PaginatedResponse<T>
+
+7. Validation Rules
+   Expense Validation
+   amount: Must be positive number > 0, max 2 decimal places
+   description: Required, 1-255 characters
+   category: Must exist in categories table
+   date: Cannot be in future, must be valid date format
+   notes: Optional, max 1000 characters
+
+Category Validation
+name: Required, unique, 1-50 characters
+color: Optional, must be valid HEX format (#RRGGBB)
+budget: Optional, must be positive if provided
+
+Recurring Expense Validation
+frequency: Must be one of: daily, weekly, monthly, yearly
+startDate: Must be valid date
+endDate: If provided, must be after startDate
+nextDueDate: Must be after startDate
+
+8. Data Storage Options
+   Option A: SQLite (Recommended for MVP)
+   Simple setup, no server needed
+   File-based storage
+   Good for desktop/local apps
+   File: expense_tracker.db
+
+Option B: PostgreSQL
+Better for multi-user scenarios
+Advanced features and scalability
+Recommended for production
+
+Option C: MongoDB (NoSQL)
+Flexible schema
+Good for rapid prototyping
+Different query patterns
+
+Recommendation: Use SQLite for MVP, migrate to PostgreSQL if needed.
+
+9. Sample Data
+   {
+   "categories": [
+   {
+   "id": 1,
+   "name": "Food",
+   "icon": "🍔",
+   "color": "#FF6B6B",
+   "budget": 5000
+   }
+   ],
+   "expenses": [
+   {
+   "id": 1,
+   "amount": 250,
+   "description": "Lunch at Warorot",
+   "category_id": 1,
+   "date": "2025-01-15",
+   "notes": "pad krapow moo",
+   "created_at": "2025-01-15T12:30:00Z"
+   }
+   ]
+   }
+
+10. Future Enhancements
+    User Model: For multi-user support
+    Transaction History: Track all changes
+    Attachments: Store receipt images
+    Tags: More flexible categorization
+    Analytics: Advanced metrics and predictions

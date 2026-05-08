@@ -1,4 +1,5 @@
-Skill
+## Skill
+
 CRUD
 Categories
 Monthly Summary
@@ -7,3 +8,7 @@ Budget Alert
 CSV Export
 Recurring Expenses
 Multi-currency
+React Skill
+Laravel Skill
+MySQL / Database Skill
+Charts / Analytics Skill
