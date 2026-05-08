@@ -1166,3 +1166,6 @@ Recommendation: Use SQLite for MVP, migrate to PostgreSQL if needed.
     Attachments: Store receipt images
     Tags: More flexible categorization
     Analytics: Advanced metrics and predictions
+
+
+โดยที่เราจะนำไป deploy ที่ vercel
