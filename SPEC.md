@@ -657,13 +657,105 @@ GET /api/categories
 - Prevent recurring jobs from creating duplicate expenses
 - Use UTC in database and timezone-aware display on UI
 
+# Expense Tracker - MoSCoW Requirements Analysis
+
+## Must Have (Essential Features)
+
+**Expense Logging System** (Create, Read, Delete)
+
+- Add new expenses with amount and description
+- View existing expenses
+- Delete expenses
+
+**Basic Category System** (Category Tagging)
+
+- Assign expenses to predefined categories
+- Tag expenses with multiple categories if needed
+
+**Monthly Total Calculation**
+
+- Calculate total expenses per month
+- Display monthly summaries
+
+**Date Data Storage** (Date Truncation)
+
+- Store and manage expense dates
+- Maintain date consistency for reporting
+
+---
+
+## Should Have (High Priority Features)
+
+**Summary Graphs** (Pie Chart by Category)
+
+- Visualize expense distribution by category
+- Interactive pie chart with category breakdowns
+
+**Date Range Filtering System**
+
+- Filter expenses by custom date ranges
+- View expenses between specific start and end dates
+
+**Average Calculations**
+
+- Calculate daily average expenses
+- Calculate monthly average expenses
+- Display average metrics alongside totals
+
+---
+
+## Could Have (Nice-to-Have Features)
+
+**Monthly Budget Management**
+
+- Set monthly budget limits per category
+- Track spending against budget
+- Alert notifications when approaching budget limit
+
+**CSV Export Functionality**
+
+- Export expense data to CSV format
+- Download data for external analysis
+
+**Recurring Expenses Management**
+
+- Create recurring expense entries
+- Manage subscription-based or regular payments
+- Auto-populate recurring expenses
+
+---
+
+## Won't Have (Out of Scope for This Phase)
+
+**AI Receipt Scanning** (OCR)
+
+- Optical Character Recognition for receipt images
+- Automated expense data extraction from receipts
+
+**Automatic Cross-Bank Sync System**
+
+- Synchronize data across multiple bank accounts
+- Real-time transaction integration from banks
+
+---
+
+## Summary
+
+**Total Must Have**: 4 major feature groups
+**Total Should Have**: 3 major feature groups
+**Total Could Have**: 3 major feature groups
+**Total Won't Have**: 2 out of scope items
+
+This prioritization ensures a minimum viable product (MVP) with essential expense tracking capabilities, followed by analytical features, and optional enhancements for future phases.
+
 ## Goal
 
 **Build an Expense Tracker for individual users to accurately monitor monthly spending and visualize financial status.**
 **Problem Statement (Why):** To eliminate the risk of errors in manual financial aggregation and complex calculations, which often lead to inaccurate financial tracking.
 **Target Benefit:** Provide users with real-time monthly financial insights and a structured system for categorized expense management.
 
-Tech Stack
+## Tech Stack
+
 Front: React(NodeJS TypeScript)
 Back: Laravel(PHP)
 DB: MySQL
