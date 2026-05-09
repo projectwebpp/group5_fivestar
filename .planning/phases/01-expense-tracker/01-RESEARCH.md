@@ -638,7 +638,7 @@ Phase 1 has no functional REQ-IDs (foundational). Tests map to success criteria 
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Railway Free Tier MySQL Persistence**
    - What we know: Railway provides MySQL as an add-on; environment variables `MYSQLHOST`, `MYSQLPORT`, `MYSQLUSER`, `MYSQLPASSWORD`, `MYSQLDATABASE`, `MYSQL_URL` are auto-injected
