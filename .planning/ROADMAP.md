@@ -12,7 +12,7 @@ Five phases that take the project from an empty repository to a fully working ex
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** - Laravel + React scaffolds, MySQL schema, JWT config, Vercel deploy pipeline wired up
+- [x] **Phase 1: Foundation** - Laravel + React scaffolds, MySQL schema, JWT config, Vercel deploy pipeline wired up
 - [ ] **Phase 2: Authentication** - Users can register, log in, log out; all protected routes require valid JWT
 - [ ] **Phase 3: Categories** - Users can view predefined categories and manage custom ones
 - [ ] **Phase 4: Expense Management** - Users can add, view, filter, edit, and delete expenses end-to-end
@@ -34,9 +34,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 3 (Wave 1: 01-01 Laravel scaffold, 01-02 React scaffold | Wave 2: 01-03 DB migrations + deploy)
 
 Plans:
-- [ ] 01-01: Laravel API scaffold (routes, middleware, DB connection, JWT config, response envelope)
-- [ ] 01-02: React TypeScript frontend scaffold (Vite/CRA, TypeScript config, API client, routing skeleton)
-- [ ] 01-03: Database schema migrations and Vercel deploy pipeline
+- [x] 01-01: Laravel API scaffold (routes, middleware, DB connection, JWT config, response envelope)
+- [x] 01-02: React TypeScript frontend scaffold (Vite/CRA, TypeScript config, API client, routing skeleton)
+- [x] 01-03: Database schema migrations and Vercel deploy pipeline
 **UI hint**: yes
 
 ### Phase 2: Authentication
@@ -119,7 +119,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/3 | Not started | - |
+| 1. Foundation | 3/3 | Complete | 2026-05-09 |
 | 2. Authentication | 0/2 | Not started | - |
 | 3. Categories | 0/2 | Not started | - |
 | 4. Expense Management | 0/3 | Not started | - |
