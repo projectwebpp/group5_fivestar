@@ -1,11 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "WebSearch",
-      "Bash(dpkg -l 'php*')",
-      "Bash(php8.3 --version)",
-      "Bash(composer --version)",
-      "Bash(apt-cache search *)"
+      "Bash(*)"
     ]
   }
 }
