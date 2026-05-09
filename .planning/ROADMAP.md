@@ -13,7 +13,7 @@ Five phases that take the project from an empty repository to a fully working ex
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Laravel + React scaffolds, MySQL schema, JWT config, Vercel deploy pipeline wired up
-- [ ] **Phase 2: Authentication** - Users can register, log in, log out; all protected routes require valid JWT
+- [x] **Phase 2: Authentication** - Users can register, log in, log out; all protected routes require valid JWT
 - [ ] **Phase 3: Categories** - Users can view predefined categories and manage custom ones
 - [ ] **Phase 4: Expense Management** - Users can add, view, filter, edit, and delete expenses end-to-end
 - [ ] **Phase 5: Analytics & Reports** - Users can see monthly summaries, category breakdowns, and averages
