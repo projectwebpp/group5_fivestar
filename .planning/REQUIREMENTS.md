@@ -76,31 +76,31 @@ Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | — | Pending |
-| AUTH-02 | — | Pending |
-| AUTH-03 | — | Pending |
-| AUTH-04 | — | Pending |
-| EXP-01 | — | Pending |
-| EXP-02 | — | Pending |
-| EXP-03 | — | Pending |
-| EXP-04 | — | Pending |
-| EXP-05 | — | Pending |
-| EXP-06 | — | Pending |
-| CAT-01 | — | Pending |
-| CAT-02 | — | Pending |
-| CAT-03 | — | Pending |
-| CAT-04 | — | Pending |
-| CAT-05 | — | Pending |
-| REP-01 | — | Pending |
-| REP-02 | — | Pending |
-| REP-03 | — | Pending |
-| REP-04 | — | Pending |
+| AUTH-01 | Phase 2 | Pending |
+| AUTH-02 | Phase 2 | Pending |
+| AUTH-03 | Phase 2 | Pending |
+| AUTH-04 | Phase 2 | Pending |
+| EXP-01 | Phase 4 | Pending |
+| EXP-02 | Phase 4 | Pending |
+| EXP-03 | Phase 4 | Pending |
+| EXP-04 | Phase 4 | Pending |
+| EXP-05 | Phase 4 | Pending |
+| EXP-06 | Phase 4 | Pending |
+| CAT-01 | Phase 3 | Pending |
+| CAT-02 | Phase 3 | Pending |
+| CAT-03 | Phase 3 | Pending |
+| CAT-04 | Phase 3 | Pending |
+| CAT-05 | Phase 3 | Pending |
+| REP-01 | Phase 5 | Pending |
+| REP-02 | Phase 5 | Pending |
+| REP-03 | Phase 5 | Pending |
+| REP-04 | Phase 5 | Pending |
 
 **Coverage:**
 - v1 requirements: 19 total
-- Mapped to phases: 0 (populated by roadmapper)
-- Unmapped: 19 ⚠️
+- Mapped to phases: 19 (Phase 2: 4, Phase 3: 5, Phase 4: 6, Phase 5: 4)
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-05-09*
-*Last updated: 2026-05-09 after initial definition*
+*Last updated: 2026-05-09 after roadmap creation — traceability populated*
