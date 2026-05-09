@@ -1,68 +1,64 @@
 {
   "version": "1.0",
-  "timestamp": "2026-05-09T23:35:49+07:00",
-  "phase": "2",
-  "phase_name": "Authentication",
-  "phase_dir": ".planning/phases/02-authentication",
-  "plan": 1,
+  "timestamp": "2026-05-10T00:00:00+07:00",
+  "phase": "3",
+  "phase_name": "Categories",
+  "phase_dir": ".planning/phases/03-categories",
+  "plan": 0,
   "task": 0,
-  "total_tasks": 3,
+  "total_tasks": 0,
   "status": "paused",
   "completed_tasks": [
-    {"id": "02-02", "name": "Frontend auth UI (ProtectedRoute + AuthPage + App.tsx)", "status": "done", "commit": "a048820"},
-    {"id": "02-02-task4", "name": "Browser smoke test (manual checkpoint)", "status": "pending_human_verify"}
+    {"id": "research", "name": "Phase 3 domain research (03-RESEARCH.md)", "status": "done", "commit": "56a3a23"},
+    {"id": "patterns", "name": "Pattern mapping (03-PATTERNS.md)", "status": "done", "commit": "uncommitted"},
+    {"id": "validation", "name": "Validation strategy (03-VALIDATION.md)", "status": "done", "commit": "uncommitted"},
+    {"id": "planning", "name": "Phase 3 plans written (03-01-PLAN.md + 03-02-PLAN.md)", "status": "done", "commit": "7b4ef32"}
   ],
   "remaining_tasks": [
-    {"id": "02-01", "name": "Backend JWT auth (migration + AuthController + 8 PHPUnit tests)", "status": "not_started", "wave": 1},
-    {"id": "02-02-task4", "name": "Browser smoke test — manual 11-step verification", "status": "not_started", "wave": "checkpoint"}
+    {"id": "plan-check", "name": "Run gsd-plan-checker on 03-01 + 03-02 plans", "status": "not_started"},
+    {"id": "commit-artifacts", "name": "Commit 03-PATTERNS.md + 03-VALIDATION.md + update STATE.md", "status": "not_started"},
+    {"id": "execute", "name": "Execute Phase 3 via /gsd-execute-phase 3", "status": "not_started"}
   ],
   "blockers": [
     {
-      "description": "No Linux-native PHP in WSL. php on PATH is Windows XAMPP 8.2 binary (Visual C++ ZTS) — cannot run PHPUnit/artisan in WSL context. composer.json requires ^8.3. vendor/ not installed.",
+      "description": "PHP 8.3 + Composer must be installed in WSL before executing 03-01 (backend API plan). Carry-over from Phase 2.",
       "type": "human_action",
-      "workaround": "Install PHP 8.3 + Composer in WSL, then run composer install"
+      "workaround": "Same WSL PHP setup as Phase 2 requirement. If already done, ignore."
     }
   ],
   "human_actions_pending": [
     {
-      "action": "Install PHP 8.3 in WSL: sudo add-apt-repository ppa:ondrej/php -y && sudo apt update && sudo apt install -y php8.3 php8.3-cli php8.3-sqlite3 php8.3-mbstring php8.3-xml php8.3-curl php8.3-zip php8.3-tokenizer",
-      "context": "No Linux-native PHP in WSL. XAMPP PHP 8.2 is a Windows binary that fails in WSL paths.",
+      "action": "Verify PHP 8.3 is installed in WSL (php8.3 --version) and vendor/ exists in backend/. If not: follow Phase 2 HANDOFF human_actions_pending.",
+      "context": "03-01 backend plan requires php artisan to run PHPUnit tests. Without Linux PHP, execution will fail.",
       "blocking": true
-    },
-    {
-      "action": "Install Composer in WSL: curl -sS https://getcomposer.org/installer | php8.3 -- --install-dir=/usr/local/bin --filename=composer",
-      "context": "Composer not available in WSL PATH.",
-      "blocking": true
-    },
-    {
-      "action": "Install backend deps: cd /mnt/c/Users/copfo/Desktop/group5_fivestar/backend && composer install && php artisan key:generate && php artisan jwt:secret --no-interaction",
-      "context": "vendor/ directory not present. JWT_SECRET must be generated for tests to pass.",
-      "blocking": true
-    },
-    {
-      "action": "After 02-01 executes: run browser smoke test (11 steps) in Task 4 of 02-02",
-      "context": "02-02-SUMMARY.md documents the 11 verification steps. Requires both backend (php artisan serve) and frontend (npm run dev) running.",
-      "blocking": false
     }
   ],
   "decisions": [
     {
-      "decision": "Fixed .claude/settings.local.json from overly restrictive (4 specific Bash commands) to Bash(*)",
-      "rationale": "Previous restrictive allow list (created by fewer-permission-prompts hook from a PHP investigation session) blocked executor subagents from running git/write/commit in worktrees. Committed at 892d391.",
-      "phase": "2"
+      "decision": "D-04 deletion guard corrected: expenses table has NO user_id column. Use Expense::where('category_id', $id)->exists() not two-condition form.",
+      "rationale": "CONTEXT.md D-04 had a bug discovered during research. Plans reflect the corrected form.",
+      "phase": "3"
     },
     {
-      "decision": "02-02 (frontend) executed and merged successfully in worktree isolation",
-      "rationale": "No PHP dependency. TypeScript + Vite build passed. ProtectedRoute, tabbed AuthPage, App.tsx wrapping complete.",
-      "phase": "2"
+      "decision": "gamepad icon name is gamepad-2 everywhere (seeder, AuthController defaults, frontend ICON_MAP)",
+      "rationale": "lucide-react exports Gamepad2 not Gamepad. CategorySeeder used gamepad string.",
+      "phase": "3"
     },
     {
-      "decision": "02-01 (backend) must re-run after PHP 8.3 + Composer installed in WSL",
-      "rationale": "Worktree agent found no Linux PHP, and settings.local.json (now fixed) blocked all tool operations.",
-      "phase": "2"
+      "decision": "budget column added to Category::$hidden to prevent v1 API leakage",
+      "rationale": "Phase 1 migration included budget column for v2. Must be hidden from v1 responses.",
+      "phase": "3"
+    },
+    {
+      "decision": "Plan checker was NOT run before pause — plans written but not verified",
+      "rationale": "User interrupted /gsd-plan-phase 3 just before checker spawned. Plans look complete from planner source audit.",
+      "phase": "3"
     }
   ],
-  "uncommitted_files": [],
-  "next_action": "1. Complete human actions (PHP 8.3 + Composer + composer install). 2. Run /gsd-execute-phase 2 — only 02-01 remains (02-02 has SUMMARY). 3. After 02-01 completes: run browser smoke test (02-02 Task 4 checkpoint).",
-  "context_notes": "Phase 2 is 50% done. Frontend auth slice is complete and committed. Backend JWT auth (02-01) needs PHP environment fixed first. The 02-01 plan is TDD: write failing tests first (Wave 0 RED), then implement (GREEN). settings.local.json is now Bash(*) — no more permission issues for future executor agents."
+  "uncommitted_files": [
+    ".planning/phases/03-categories/03-PATTERNS.md",
+    ".planning/phases/03-categories/03-VALIDATION.md"
+  ],
+  "next_action": "Option A: Re-run /gsd-plan-phase 3 (planner will detect existing plans, offer checker) to complete verification. Option B: Skip checker and run /gsd-execute-phase 3 directly — plans are committed and complete.",
+  "context_notes": "Phase 3 planning is 95% done. Both plans written and committed. Interrupted just before plan checker spawned. The planner's source audit showed all 5 CAT requirements covered, all 11 decisions from CONTEXT.md covered. Safe to execute. Wave 1 = 03-01 (backend API), Wave 2 = 03-02 (frontend UI, depends on Wave 1)."
 }
