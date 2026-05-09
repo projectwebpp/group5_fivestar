@@ -31,7 +31,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. MySQL database is connected and all v1 schema migrations run cleanly (expenses, categories tables)
   4. JWT secret is configured and the auth middleware stack is wired (even before auth routes exist)
   5. A `git push` to main triggers a successful Vercel deployment automatically
-**Plans**: TBD
+**Plans**: 3 (Wave 1: 01-01 Laravel scaffold, 01-02 React scaffold | Wave 2: 01-03 DB migrations + deploy)
 
 Plans:
 - [ ] 01-01: Laravel API scaffold (routes, middleware, DB connection, JWT config, response envelope)
