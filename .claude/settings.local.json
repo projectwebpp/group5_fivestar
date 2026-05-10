@@ -5,7 +5,8 @@
       "Bash(dpkg -l 'php*')",
       "Bash(php8.3 --version)",
       "Bash(composer --version)",
-      "Bash(apt-cache search *)"
+      "Bash(apt-cache search *)",
+      "Skill(gsd-execute-phase)"
     ]
   }
 }
