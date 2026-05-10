@@ -51,7 +51,8 @@ export default function ExpenseDetailPage() {
   }
 
   const cat = categories.find(c => c.id === expense.category_id);
-  const dateLabel = new Date(expense.date).toLocaleDateString('en-GB', {
+  const [year, month, day] = expense.date.split('-').map(Number);
+  const dateLabel = new Date(year, month - 1, day).toLocaleDateString('en-GB', {
     day: '2-digit',
     month: 'short',
     year: 'numeric',
