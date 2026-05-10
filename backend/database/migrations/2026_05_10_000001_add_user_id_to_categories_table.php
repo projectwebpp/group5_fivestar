@@ -19,10 +19,16 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('categories', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
+            // 1. Drop composite unique before touching the FK column
             $table->dropUnique(['user_id', 'name']);
+            // 2. Drop the FK
+            $table->dropForeign(['user_id']);
+            // 3. Drop the column
             $table->dropColumn('user_id');
-            $table->unique('name');
+            // 4. Re-adding single-column unique('name') is intentionally omitted:
+            //    after Phase 3 data exists, duplicate names across users make this
+            //    unsafe. This rollback is a destructive dev-only operation.
+            // $table->unique('name');
         });
     }
 };
