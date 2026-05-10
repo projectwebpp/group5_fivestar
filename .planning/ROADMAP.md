@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation** - Laravel + React scaffolds, MySQL schema, JWT config, Vercel deploy pipeline wired up
 - [ ] **Phase 2: Authentication** - Users can register, log in, log out; all protected routes require valid JWT
 - [ ] **Phase 3: Categories** - Users can view predefined categories and manage custom ones
-- [ ] **Phase 4: Expense Management** - Users can add, view, filter, edit, and delete expenses end-to-end
+- [x] **Phase 4: Expense Management** - Users can add, view, filter, edit, and delete expenses end-to-end (completed 2026-05-10)
 - [ ] **Phase 5: Analytics & Reports** - Users can see monthly summaries, category breakdowns, and averages
 
 ## Phase Details
@@ -90,9 +90,9 @@ Plans:
 **Plans**: 3 (Wave 1: 04-01 backend API | Wave 2: 04-02 list UI | Wave 3: 04-03 form + detail + delete)
 
 Plans:
-- [ ] 04-01-PLAN.md — Expense API: migration patch (user_id), Eloquent model, JWT-protected REST controller (CRUD + filter + pagination), feature tests
-- [ ] 04-02-PLAN.md — Expense list UI: typed API client, ExpenseCard/FilterBar/Pagination/EmptyState, ExpensesPage rebuild, route registration
-- [ ] 04-03-PLAN.md — Form + detail + delete UI: shared add/edit form (D-09), detail page with inline-confirm delete (D-11), InlineError + LoadingButton
+- [x] 04-01-PLAN.md — Expense API: migration patch (user_id), Eloquent model, JWT-protected REST controller (CRUD + filter + pagination), feature tests
+- [x] 04-02-PLAN.md — Expense list UI: typed API client, ExpenseCard/FilterBar/Pagination/EmptyState, ExpensesPage rebuild, route registration
+- [x] 04-03-PLAN.md — Form + detail + delete UI: shared add/edit form (D-09), detail page with inline-confirm delete (D-11), InlineError + LoadingButton
 **UI hint**: yes
 
 ### Phase 5: Analytics & Reports
@@ -122,5 +122,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Foundation | 3/3 | Complete | 2026-05-09 |
 | 2. Authentication | 0/2 | Not started | - |
 | 3. Categories | 0/2 | Not started | - |
-| 4. Expense Management | 0/3 | Not started | - |
+| 4. Expense Management | 3/3 | Complete    | 2026-05-10 |
 | 5. Analytics & Reports | 0/2 | Not started | - |

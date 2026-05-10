@@ -14,12 +14,12 @@
 
 ### Expenses
 
-- [ ] **EXP-01**: User can add an expense (amount, currency, category, description, date)
-- [ ] **EXP-02**: User can view all expenses with pagination (page, limit)
-- [ ] **EXP-03**: User can filter expenses by date range, category, and amount range
-- [ ] **EXP-04**: User can view a single expense's detail
-- [ ] **EXP-05**: User can edit an expense (full PUT and partial PATCH)
-- [ ] **EXP-06**: User can delete an expense
+- [x] **EXP-01**: User can add an expense (amount, currency, category, description, date)
+- [x] **EXP-02**: User can view all expenses with pagination (page, limit)
+- [x] **EXP-03**: User can filter expenses by date range, category, and amount range
+- [x] **EXP-04**: User can view a single expense's detail
+- [x] **EXP-05**: User can edit an expense (full PUT and partial PATCH)
+- [x] **EXP-06**: User can delete an expense
 
 ### Categories
 
@@ -80,12 +80,12 @@ Updated during roadmap creation.
 | AUTH-02 | Phase 2 | Pending |
 | AUTH-03 | Phase 2 | Pending |
 | AUTH-04 | Phase 2 | Pending |
-| EXP-01 | Phase 4 | Pending |
-| EXP-02 | Phase 4 | Pending |
-| EXP-03 | Phase 4 | Pending |
-| EXP-04 | Phase 4 | Pending |
-| EXP-05 | Phase 4 | Pending |
-| EXP-06 | Phase 4 | Pending |
+| EXP-01 | Phase 4 | Complete |
+| EXP-02 | Phase 4 | Complete |
+| EXP-03 | Phase 4 | Complete |
+| EXP-04 | Phase 4 | Complete |
+| EXP-05 | Phase 4 | Complete |
+| EXP-06 | Phase 4 | Complete |
 | CAT-01 | Phase 3 | Pending |
 | CAT-02 | Phase 3 | Pending |
 | CAT-03 | Phase 3 | Pending |
