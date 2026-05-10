@@ -1,7 +1,7 @@
 ---
 phase: 5
 slug: analytics
-status: draft
+status: approved
 shadcn_initialized: false
 preset: none
 created: 2026-05-10
@@ -45,9 +45,8 @@ Declared values (multiples of 4 only). Extracted from existing components.
 | 3xl | 64px | Not used in this phase |
 
 Exceptions:
-- Pre-set buttons (This Month / Last Month / Last 3 Months): `padding: '6px 12px'` — slightly tighter than md to keep the row compact.
 - Pie chart container: minimum height 280px to ensure chart is legible on mobile widths.
-- Summary stat cards: `padding: 16px 20px` (slight horizontal stretch from standard md).
+- Summary stat cards: `padding: 16px 24px` (horizontal uses lg token for visual balance).
 
 **Source:** Extracted from ExpensesPage.tsx, FilterBar.tsx, ExpenseDetailPage.tsx, EmptyState.tsx.
 
@@ -57,8 +56,8 @@ Exceptions:
 
 | Role | Size | Weight | Line Height | Usage |
 |------|------|--------|-------------|-------|
-| Body | 15px | 400 | 1.5 | Stat card values (secondary), description text, filter labels |
-| Label | 13px | 400 | 1.4 | Section sub-labels, filter input labels, chart tooltip text |
+| Body | 15px | 400 | 1.5 | Stat card values (secondary), description text, filter labels, Apply button, date inputs, nav links |
+| Label | 13px | 400 | 1.4 | Section sub-labels, filter input labels, chart tooltip text, pre-set button text |
 | Heading | 22px | 700 | 1.2 | Page heading "Analytics", summary card stat values |
 | Display | 36px | 700 | 1.1 | Not used in Phase 5 (reserved for expense detail amount) |
 
@@ -68,9 +67,11 @@ Exceptions:
 - Stat card label (e.g. "Total Expenses"): 13px / 400
 - Filter section labels ("From", "To"): 13px / 400 / `color: #7A7064`
 - Pre-set button text: 13px / 400
-- Apply button text: 14px / 700
+- Apply button text: 15px / 700
+- Date input text: 15px
+- Nav link text: 15px / 700
 
-**Source:** Extracted from ExpensesPage.tsx (h1: fontSize 22 / fontWeight 700), ExpenseDetailPage.tsx (label: 13/400, value: 15/400), FilterBar.tsx (label: 13/400, apply: 14/700).
+**Source:** Extracted from ExpensesPage.tsx (h1: fontSize 22 / fontWeight 700), ExpenseDetailPage.tsx (label: 13/400, value: 15/400), FilterBar.tsx (label: 13/400). Apply/date/nav unified to 15px body size per typography scale (4 sizes: 13, 15, 22, 36).
 
 ---
 
@@ -129,10 +130,10 @@ Contents:
   [This Month] [Last Month] [Last 3 Months]   From: [date input]   To: [date input]   [Apply]
 ```
 
-- Pre-set buttons: `padding: '6px 12px'`, `background: '#EDE7DA'`, `border: '1px solid rgba(31,27,22,0.1)'`, `borderRadius: 8`, `fontSize: 13`, `fontWeight: 400`, `cursor: 'pointer'`
+- Pre-set buttons: `padding: '8px 12px'`, `background: '#EDE7DA'`, `border: '1px solid rgba(31,27,22,0.1)'`, `borderRadius: 8`, `fontSize: 13`, `fontWeight: 400`, `cursor: 'pointer'`
 - Active pre-set state (currently selected): `background: 'oklch(48% 0.10 195)'`, `color: '#fff'`, `fontWeight: 700`
-- Date inputs: same style as FilterBar.tsx inputs — `padding: '6px 8px'`, `borderRadius: 6`, `border: '1px solid rgba(31,27,22,0.1)'`, `fontSize: 14`
-- Apply button: exact style from FilterBar.tsx Apply — `padding: '8px 16px'`, `background: 'oklch(48% 0.10 195)'`, `color: '#fff'`, `fontWeight: 700`, `fontSize: 14`, `borderRadius: 12`
+- Date inputs: same style as FilterBar.tsx inputs — `padding: '8px 8px'`, `borderRadius: 6`, `border: '1px solid rgba(31,27,22,0.1)'`, `fontSize: 15`
+- Apply button: exact style from FilterBar.tsx Apply — `padding: '8px 16px'`, `background: 'oklch(48% 0.10 195)'`, `color: '#fff'`, `fontWeight: 700`, `fontSize: 15`, `borderRadius: 12`
 - Clicking a pre-set: immediately populates from/to inputs AND fires the Apply action (no extra click needed — per 05-CONTEXT.md `<specifics>`)
 
 #### `SummaryCards`
@@ -143,7 +144,7 @@ Layout: display flex, gap: 16px, flexWrap: wrap
 Each card:
   background: #FFFCF7
   borderRadius: 12
-  padding: 16px 20px
+  padding: 16px 24px
   boxShadow: '0 1px 2px rgba(31,27,22,0.04), 0 8px 24px rgba(31,27,22,0.04)'
   border: '1px solid rgba(31,27,22,0.04)'
   flex: 1, minWidth: 120px
@@ -254,7 +255,7 @@ Nav bar style (derive from existing HomePage / App.tsx patterns):
 ```
 <nav> at top of authenticated pages
   display: flex, gap: 16, padding: '12px 24px', background: '#FFFCF7'
-  Links: fontSize 14, fontWeight 700, color: #1F1B16, textDecoration: none
+  Links: fontSize 15, fontWeight 700, color: #1F1B16, textDecoration: none
   Active page link: color: oklch(48% 0.10 195)
 ```
 
@@ -351,11 +352,11 @@ These are hard constraints enforced by CLAUDE.md and prior phase decisions:
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
+- [x] Dimension 1 Copywriting: FLAG (non-blocking — "Apply" locked by D-07)
+- [x] Dimension 2 Visuals: PASS
+- [x] Dimension 3 Color: PASS
+- [x] Dimension 4 Typography: FLAG (non-blocking — 13/15px gap is intentional, roles differ)
+- [x] Dimension 5 Spacing: PASS
+- [x] Dimension 6 Registry Safety: PASS
 
-**Approval:** pending
+**Approval:** approved 2026-05-10
