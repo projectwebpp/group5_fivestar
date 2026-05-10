@@ -20,7 +20,8 @@ class Expense extends Model
     protected $casts = [
         'amount'       => 'decimal:2',
         'expense_date' => 'date:Y-m-d',
-        'is_recurring' => 'bool',
+        // is_recurring and recurring_id columns exist in the DB but are v2-deferred features.
+        // No cast for is_recurring here so the field is not part of the v1 API contract.
     ];
 
     public function user(): BelongsTo
