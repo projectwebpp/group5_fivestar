@@ -9,7 +9,6 @@ const apiClient = axios.create({
 });
 
 // Request interceptor — attaches JWT token when present.
-// Phase 2 will store the token in localStorage under 'auth_token' after login.
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem('auth_token');
   if (token) {
@@ -17,5 +16,17 @@ apiClient.interceptors.request.use((config) => {
   }
   return config;
 });
+
+// Response interceptor — on 401, clear stale token and redirect to auth.
+apiClient.interceptors.response.use(
+  r => r,
+  err => {
+    if (err.response?.status === 401) {
+      localStorage.removeItem('auth_token');
+      window.location.href = '/auth';
+    }
+    return Promise.reject(err);
+  }
+);
 
 export default apiClient;
