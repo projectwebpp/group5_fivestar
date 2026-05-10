@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation** - Laravel + React scaffolds, MySQL schema, JWT config, Vercel deploy pipeline wired up
 - [ ] **Phase 2: Authentication** - Users can register, log in, log out; all protected routes require valid JWT
 - [ ] **Phase 3: Categories** - Users can view predefined categories and manage custom ones
-- [x] **Phase 4: Expense Management** - Users can add, view, filter, edit, and delete expenses end-to-end (completed 2026-05-10)
+- [x] **Phase 4: Expense Management** - Users can add, view, filter, edit, and delete expenses end-to-end (completed 2026-05-10)
 - [ ] **Phase 5: Analytics & Reports** - Users can see monthly summaries, category breakdowns, and averages
 
 ## Phase Details
@@ -105,11 +105,11 @@ Plans:
   2. User can see a pie chart that accurately reflects spending proportions by category
   3. User can select a custom date range and see expense trends for that period
   4. User can see their daily average and monthly average expense amounts on the summary screen
-**Plans**: TBD
+**Plans**: 2 (Wave 1: 05-01 Analytics API | Wave 2: 05-02 Analytics UI)
 
 Plans:
-- [ ] 05-01: Analytics API endpoints (monthly summary, category breakdown, date-range trends, averages)
-- [ ] 05-02: Analytics UI (summary screen with pie chart, date-range filter, averages display)
+- [ ] 05-01-PLAN.md — Analytics API: AnalyticsController@summary (aggregate query, user_id scope, averages, percentage), route in auth:api group
+- [ ] 05-02-PLAN.md — Analytics UI: recharts install, types/analytics.ts, api/analytics.ts, full AnalyticsPage (filter bar + preset buttons + summary cards + pie chart)
 **UI hint**: yes
 
 ## Progress
