@@ -87,12 +87,12 @@ Plans:
   4. User can tap an expense to view its full detail
   5. User can edit an expense (both full replacement and partial update) and see the updated values
   6. User can delete an expense and it is removed from the list
-**Plans**: TBD
+**Plans**: 3 (Wave 1: 04-01 backend API | Wave 2: 04-02 list UI | Wave 3: 04-03 form + detail + delete)
 
 Plans:
-- [ ] 04-01: Expense API endpoints (create, list with pagination, filter, detail, update PUT/PATCH, delete)
-- [ ] 04-02: Expense list UI (paginated list, filter controls, category and date display)
-- [ ] 04-03: Add/edit/delete expense UI (forms, validation, delete confirmation)
+- [ ] 04-01-PLAN.md — Expense API: migration patch (user_id), Eloquent model, JWT-protected REST controller (CRUD + filter + pagination), feature tests
+- [ ] 04-02-PLAN.md — Expense list UI: typed API client, ExpenseCard/FilterBar/Pagination/EmptyState, ExpensesPage rebuild, route registration
+- [ ] 04-03-PLAN.md — Form + detail + delete UI: shared add/edit form (D-09), detail page with inline-confirm delete (D-11), InlineError + LoadingButton
 **UI hint**: yes
 
 ### Phase 5: Analytics & Reports
