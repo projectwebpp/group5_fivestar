@@ -72,7 +72,7 @@ Plans:
 
 Plans:
 - [x] 03-01-PLAN.md — Category API (migration, models, controller, routes, AuthController seeding, CategorySeeder fix)
-- [ ] 03-02-PLAN.md — Categories UI (lucide-react install, categories API module, CategoriesPage cards grid + modal + inline delete)
+- [x] 03-02-PLAN.md — Categories UI (lucide-react install, categories API module, CategoriesPage cards grid + modal + inline delete)
 **UI hint**: yes
 
 ### Phase 4: Expense Management
