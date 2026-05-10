@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rule;
 
 class StoreExpenseRequest extends FormRequest
 {
@@ -17,7 +18,7 @@ class StoreExpenseRequest extends FormRequest
     {
         return [
             'amount'      => ['required', 'numeric', 'gt:0', 'regex:/^\d+(\.\d{1,2})?$/'],
-            'category_id' => ['required', 'integer', 'exists:categories,id'],
+            'category_id' => ['required', 'integer', Rule::exists('categories', 'id')->where('user_id', $this->user()->id)],
             'description' => ['required', 'string', 'max:255'],
             'date'        => ['required', 'date_format:Y-m-d'],
             'notes'       => ['nullable', 'string'],
