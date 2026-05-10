@@ -79,16 +79,12 @@ export default function CategoriesPage() {
   const [formError, setFormError]               = useState<string | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
     getCategories()
-      .then(res => {
-        setCategories(res.data.data);
-      })
-      .catch(() => {
-        setPageError('Failed to load categories. Please refresh.');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      .then(res => { if (!cancelled) setCategories(res.data.data); })
+      .catch(() => { if (!cancelled) setPageError('Failed to load categories. Please refresh.'); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
   }, []);
 
   function openCreateModal() {
@@ -153,7 +149,8 @@ export default function CategoriesPage() {
           : ((err as { response?: { data?: { message?: string } } })
               ?.response?.data?.message ?? 'Something went wrong. Please try again.');
       setDeleteErrors(prev => ({ ...prev, [id]: msg }));
-      setConfirmingDelete(null);
+      // Do NOT call setConfirmingDelete(null) here — keep confirm UI open so
+      // the error message remains visible to the user.
     }
   }
 
