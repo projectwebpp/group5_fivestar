@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -16,8 +17,6 @@ class AuthController extends Controller
             'email'    => 'required|email|unique:users,email',
             'password' => 'required|min:8|confirmed',
         ]);
-
-        $user = User::create($data);
 
         // D-02: seed 10 default categories per new user at registration (per-user copy)
         $defaults = [
@@ -32,9 +31,14 @@ class AuthController extends Controller
             ['name' => 'Business',      'icon' => 'briefcase',    'color' => '#C1D82F'],
             ['name' => 'Other',         'icon' => 'gift',         'color' => '#999999'],
         ];
-        foreach ($defaults as $cat) {
-            Category::create(array_merge($cat, ['user_id' => $user->id]));
-        }
+
+        $user = DB::transaction(function () use ($data, $defaults) {
+            $user = User::create($data);
+            foreach ($defaults as $cat) {
+                Category::create(array_merge($cat, ['user_id' => $user->id]));
+            }
+            return $user;
+        });
 
         $token = auth()->login($user);
 
