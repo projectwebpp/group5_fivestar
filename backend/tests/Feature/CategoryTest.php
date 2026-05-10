@@ -129,8 +129,9 @@ class CategoryTest extends TestCase
         [$user, $token] = $this->registerAndGetToken();
         $category = Category::where('user_id', $user->id)->first();
 
-        // Insert a minimal expense row referencing this category
+        // Insert a minimal expense row referencing this category (user_id required since Phase 4 migration)
         \DB::table('expenses')->insert([
+            'user_id'      => $user->id,
             'amount'       => '10.00',
             'currency'     => 'THB',
             'category_id'  => $category->id,
