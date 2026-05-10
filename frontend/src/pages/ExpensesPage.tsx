@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { listExpenses } from '../api/expenses';
+import { listCategories } from '../api/categories';
+import type { Category } from '../api/categories';
 import type { Expense, ExpenseFilters, ExpenseListMeta } from '../types/expense';
 import ExpenseCard from '../components/ExpenseCard';
 import FilterBar from '../components/FilterBar';
@@ -15,7 +17,12 @@ export default function ExpensesPage() {
   const [appliedFilters, setAppliedFilters] = useState<ExpenseFilters>({ page: 1 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    listCategories().then(setCategories).catch(() => {/* non-critical: category names degrade gracefully */});
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -60,6 +67,7 @@ export default function ExpensesPage() {
         onToggle={() => setFiltersOpen(o => !o)}
         filters={filters}
         onApply={(f) => { setFilters(f); setAppliedFilters({ ...f, page: 1 }); }}
+        categories={categories}
       />
 
       <div style={{ marginTop: 32 }}>
@@ -67,7 +75,12 @@ export default function ExpensesPage() {
         {error && <p style={{ color: '#C0392B', fontSize: 14 }}>{error}</p>}
         {!loading && !error && items.length === 0 && <EmptyState filtered={isFiltered} />}
         {!loading && !error && items.length > 0 && items.map(e => (
-          <ExpenseCard key={e.id} expense={e} onClick={() => navigate(`/expenses/${e.id}`)} />
+          <ExpenseCard
+            key={e.id}
+            expense={e}
+            onClick={() => navigate(`/expenses/${e.id}`)}
+            categoryName={categories.find(c => c.id === e.category_id)?.name}
+          />
         ))}
       </div>
 

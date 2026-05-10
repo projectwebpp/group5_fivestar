@@ -3,9 +3,10 @@ import type { Expense } from '../types/expense';
 interface ExpenseCardProps {
   expense: Expense;
   onClick: () => void;
+  categoryName?: string;
 }
 
-export default function ExpenseCard({ expense, onClick }: ExpenseCardProps) {
+export default function ExpenseCard({ expense, onClick, categoryName }: ExpenseCardProps) {
   const [year, month, day] = expense.date.split('-').map(Number);
   const formattedDate = new Date(year, month - 1, day).toLocaleDateString('en-GB', {
     day: '2-digit',
@@ -35,7 +36,7 @@ export default function ExpenseCard({ expense, onClick }: ExpenseCardProps) {
         ฿ {expense.amount.toFixed(2)}
       </span>
       <span style={{ fontWeight: 400, fontSize: 15, color: '#7A7064' }}>
-        Category #{expense.category_id}
+        {categoryName ?? `Category #${expense.category_id}`}
       </span>
       <span style={{ fontSize: 13, color: '#7A7064' }}>
         {formattedDate}

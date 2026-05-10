@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import type { ExpenseFilters } from '../types/expense';
+import type { Category } from '../api/categories';
 
 interface FilterBarProps {
   open: boolean;
   onToggle: () => void;
   filters: ExpenseFilters;
   onApply: (f: ExpenseFilters) => void;
+  categories: Category[];
 }
 
-export default function FilterBar({ open, onToggle, filters, onApply }: FilterBarProps) {
+export default function FilterBar({ open, onToggle, filters, onApply, categories }: FilterBarProps) {
   const [draft, setDraft] = useState<ExpenseFilters>(filters);
 
   const handleApply = () => {
@@ -96,6 +98,9 @@ export default function FilterBar({ open, onToggle, filters, onApply }: FilterBa
               style={{ display: 'block', width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid rgba(31,27,22,0.1)', fontSize: 14, marginTop: 4, background: '#EDE7DA' }}
             >
               <option value="">All categories</option>
+              {categories.map(c => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
             </select>
           </label>
 
