@@ -10,7 +10,6 @@ return new class extends Migration
     {
         Schema::table('expenses', function (Blueprint $table) {
             $table->foreignId('user_id')->after('id')->constrained('users')->cascadeOnDelete();
-            $table->index('user_id');
         });
     }
 
@@ -18,7 +17,6 @@ return new class extends Migration
     {
         Schema::table('expenses', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
-            $table->dropIndex(['user_id']);
             $table->dropColumn('user_id');
         });
     }
