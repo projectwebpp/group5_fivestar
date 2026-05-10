@@ -1,34 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\HealthController;
 use Illuminate\Support\Facades\Route;
 
-// Health check (Phase 1)
 Route::get('/health', [HealthController::class, 'index']);
-
-// Public auth endpoints (AUTH-01, AUTH-02)
-Route::prefix('auth')->group(function () {
-    Route::post('register', [AuthController::class, 'register']);
-    Route::post('login',    [AuthController::class, 'login']);
-});
-
-// Protected auth endpoints (AUTH-03)
-Route::middleware('jwt.auth')->prefix('auth')->group(function () {
-    Route::post('logout', [AuthController::class, 'logout']);
-    Route::get('me',      [AuthController::class, 'me']);
-});
-
-// Protected API surface (AUTH-04) — populated in Phases 3-5
-Route::middleware('jwt.auth')->group(function () {
-    // Phase 3: Categories (CAT-01 through CAT-05)
-    Route::get('categories',               [CategoryController::class, 'index']);
-    Route::post('categories',              [CategoryController::class, 'store']);
-    Route::put('categories/{category}',    [CategoryController::class, 'update']);
-    Route::delete('categories/{category}', [CategoryController::class, 'destroy']);
-    // NOTE: GET /categories/{category} (show) is intentionally deferred to Phase 4.
-    //       When added, it MUST include the same ownership check pattern as update/destroy.
-    // Phase 4: expense routes
-    // Phase 5: analytics routes
-});

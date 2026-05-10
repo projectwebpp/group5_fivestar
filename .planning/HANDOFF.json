@@ -1,34 +1,39 @@
 {
   "version": "1.0",
-  "timestamp": "2026-05-10T03:39:44.276Z",
+  "timestamp": "2026-05-10T04:48:08Z",
   "phase": "4",
-  "phase_name": "Expense Management",
+  "phase_name": "expense-management",
   "phase_dir": ".planning/phases/04-expense-management",
   "plan": 0,
   "task": 0,
   "total_tasks": 0,
   "status": "paused",
   "completed_tasks": [
-    {"id": 1, "name": "Phase 4 discuss-phase — CONTEXT.md captured", "status": "done", "commit": "5ddd0b7"}
+    {"id": "session", "name": "Phase 4 discuss-phase (14 decisions)", "status": "done", "commit": "8b01125"},
+    {"id": "session", "name": "Phase 4 ui-phase (UI-SPEC approved)", "status": "done", "commit": "55eb45c"},
+    {"id": "session", "name": "Phase 4 plan-phase (3 plans locked)", "status": "done", "commit": "d21065e"}
   ],
   "remaining_tasks": [
-    {"id": 2, "name": "Plan Phase 4 (/gsd-plan-phase 4)", "status": "not_started"},
-    {"id": 3, "name": "Execute 04-01: Expense API endpoints", "status": "not_started"},
-    {"id": 4, "name": "Execute 04-02: Expense list UI", "status": "not_started"},
-    {"id": 5, "name": "Execute 04-03: Add/edit/delete expense UI", "status": "not_started"}
+    {"id": 1, "name": "Execute Phase 2 (authentication)", "status": "not_started"},
+    {"id": 2, "name": "Discuss + Plan Phase 3 (categories)", "status": "not_started"},
+    {"id": 3, "name": "Execute Phase 3", "status": "not_started"},
+    {"id": 4, "name": "Execute Phase 4 (expense management)", "status": "not_started"}
   ],
   "blockers": [],
   "human_actions_pending": [],
   "decisions": [
-    {"decision": "Expense form as modal on list page, same modal for add+edit", "rationale": "Consistent with Phase 3 categories pattern", "phase": "4"},
-    {"decision": "No separate detail view — edit modal satisfies EXP-04", "rationale": "Simpler UX, fewer routes", "phase": "4"},
-    {"decision": "Expense list as cards grid", "rationale": "Consistent with categories page aesthetic", "phase": "4"},
-    {"decision": "Always-visible filter bar, auto-apply on change", "rationale": "Filtering is core workflow, not edge case", "phase": "4"},
-    {"decision": "Pagination: Prev/Next with page indicator, 10 per page fixed", "rationale": "Simple, mobile-friendly, works with Laravel paginator", "phase": "4"},
-    {"decision": "Phase 4 must add user_id column to expenses table (Phase 1 missed it)", "rationale": "Architectural requirement for per-user data scoping", "phase": "4"},
-    {"decision": "Phase 4 drops is_recurring and recurring_id columns (v2 columns with no FK)", "rationale": "Phase 3 review IN-03 cleanup", "phase": "4"}
+    {
+      "decision": "Phase 4 planned out of order (phases 2 and 3 still unexecuted)",
+      "rationale": "Planning is independent of execution order — context discussion happened while Phase 2 plans were ready",
+      "phase": "4"
+    },
+    {
+      "decision": "Phase 4 plan-checker skipped",
+      "rationale": "Context hit 83% after planner returned PLANNING COMPLETE; planner did multi-source coverage audit of all EXP-01..06 and 14 CONTEXT decisions — advisory only",
+      "phase": "4"
+    }
   ],
   "uncommitted_files": [],
-  "next_action": "/gsd-plan-phase 4",
-  "context_notes": "Phase 4 context discussion complete. All decisions captured in 04-CONTEXT.md. The discuss-phase workflow ran end-to-end. All four gray areas (form placement, list layout, filters, pagination) were discussed and decided. Ready to plan — run /gsd-plan-phase 4 to generate the three Phase 4 execution plans (04-01 API, 04-02 list UI, 04-03 add/edit/delete UI)."
+  "next_action": "Run /gsd-execute-phase 2 — Phase 2 plans (02-01, 02-02) are ready in .planning/phases/02-authentication/",
+  "context_notes": "This session completed Phase 4 planning in full (discuss → ui-phase → plan-phase). All 3 Phase 4 plans committed. Execution must follow order: Phase 2 → Phase 3 → Phase 4. Phase 3 needs /gsd-discuss-phase 3 + /gsd-plan-phase 3 first. Context exhaustion was a recurring issue this session — use --skip-research and /clear between major GSD steps."
 }

@@ -6,57 +6,40 @@
 <domain>
 ## Phase Boundary
 
-Users can log new expenses, view their full expense list with pagination and filters, inspect a single expense via the edit modal, edit expenses (full and partial update), and delete expenses — the core product value delivered end-to-end. All expenses are user-scoped.
+Users can log new expenses (amount, category, description, date), view their full expense list with pagination and filters, inspect a single expense detail, edit it (full PUT and partial PATCH), and delete it — the core product value delivered end-to-end. All expense endpoints require a valid JWT. Currency is stored as THB silently for v1 (multi-currency UI deferred to v2).
 
 </domain>
 
 <decisions>
 ## Implementation Decisions
 
-### Schema Migrations (Architectural — Locked)
-- **D-01:** The `expenses` table from Phase 1 has **no `user_id` column**. Phase 4 MUST add `user_id` via a new migration: add `user_id BIGINT UNSIGNED NOT NULL`, add FK constraint to `users.id` with `onDelete('cascade')`, add index on `user_id`. All expense queries must be scoped to `auth()->id()`.
-- **D-02:** The `is_recurring` (boolean) and `recurring_id` (unsignedBigInteger) columns exist in the Phase 1 expenses migration but are deferred to v2 (Phase 3 review IN-03). Phase 4 drops them via a separate migration to clean up schema noise. The `recurring_id` column has no FK constraint — safe to drop.
-- **D-03:** The `category_id` FK on expenses uses `restrictOnDelete()` (from Phase 1 migration) — this enforces that deleting a category with expenses is blocked at the DB level (consistent with the Phase 3 application-level guard).
-
-### Expense Form & Edit UX
-- **D-04:** "Add expense" opens a **modal overlay on the expenses list page** — same pattern as Phase 3 categories (no new route needed).
-- **D-05:** "Edit expense" reuses the **same modal, pre-filled** with the expense's current values. One component handles both create and edit. No separate edit route.
-- **D-06:** **No separate detail view** — the pre-filled edit modal satisfies EXP-04 (view single expense detail). Clicking edit on a card opens the modal with all fields visible.
-
 ### Expense List Layout
-- **D-07:** Expenses are displayed as a **cards grid** (`display: grid`, `repeat(auto-fill, minmax(240px, 1fr))`). Each card shows: category color strip at top (as background of a header area), category icon + category name, expense description, amount (bold), and date.
-- **D-08:** Each card has **edit (pencil) and delete (trash) icons** visible on the card — same pattern as categories. Delete uses the Phase 3 inline confirmation pattern: trash icon → "Are you sure? Confirm" button appears inline → success removes the card → error stays visible on the card.
+- **D-01:** Expense list displays one **card per expense** — matches existing `ui-mockups/app.jsx` design direction.
+- **D-02:** Each list card shows **amount (฿ symbol) + category name + date only**. Description visible only in the detail view.
+- **D-03:** Tapping a card navigates to a **separate detail page at `/expenses/:id`** — clean URL, browser back returns to list.
+- **D-04:** Empty state (no expenses, or filters return zero results) shows a **simple text message + "Add Expense" button** linking to `/expenses/new`.
 
-### Filters (EXP-03)
-- **D-09:** Filters are shown in an **always-visible filter bar above the card grid**. No toggle or modal needed — filtering is a core workflow, not an edge case.
-- **D-10:** Filters **auto-apply on change** — each filter field change immediately re-fetches the expense list (no separate Apply button).
-- **D-11:** Filter controls use **native HTML inputs** — no extra libraries:
-  - Date range: two `<input type="date">` fields (from / to)
-  - Category: `<select>` dropdown populated from the user's categories
-  - Amount range: two `<input type="number">` fields (min / max)
-- **D-12:** Changing any filter **resets to page 1** automatically (prevents empty page results).
+### Filter & Pagination UX
+- **D-05:** Filter controls live in a **collapsible filter bar above the list** — a "Filters" toggle button shows/hides filter inputs (date range, category, amount range).
+- **D-06:** Pagination uses **Previous / Next buttons + "Page X of Y" indicator**. No numbered page buttons.
+- **D-07:** Page size is **10 per page, fixed** — no user-facing page size control in v1.
+- **D-08:** Filters apply via an **Apply button** — not auto-applied on change — to avoid API calls on every keystroke while entering amount range or date.
 
-### Pagination (EXP-02)
-- **D-13:** Pagination uses **Previous / Next buttons with a page indicator** ("Page 2 of 5"). No numbered page links, no infinite scroll.
-- **D-14:** **10 expenses per page**, fixed. No per-page selector. Backend default `limit=10`.
-- **D-15:** Pagination controls sit **below the card grid**.
+### Add/Edit Form Routing
+- **D-09:** Add and Edit use the **same form component** rendered at two routes: `/expenses/new` (add) and `/expenses/:id/edit` (edit pre-fills fields from existing expense).
+- **D-10:** After successful save (add or edit), user is **redirected to `/expenses`** (the expense list) to see the new/updated item.
+- **D-11:** Delete action lives on the **detail page (`/expenses/:id`)**. An inline "Are you sure?" confirm message appears before the API call — no modal component needed (`window.confirm()` or inline state toggle acceptable).
+- **D-12:** Form validation errors display **inline below the submit button** as a single red message — consistent with Phase 2 auth pattern (D-08 from `02-CONTEXT.md`). No field-level errors.
 
-### API Design
-- **D-16:** `GET /expenses` accepts query params: `page` (default 1), `limit` (default 10), `date_from` (ISO date), `date_to` (ISO date), `category_id` (integer), `amount_min` (decimal), `amount_max` (decimal). Returns paginated envelope with `data`, `meta.current_page`, `meta.last_page`, `meta.total`.
-- **D-17:** `POST /expenses` and `PUT /expenses/{id}` validate: `amount` (required, numeric, > 0, max 2 decimal places), `currency` (required, string, size:3 — default THB), `category_id` (required, integer, must belong to authenticated user), `description` (required, string, max:255), `expense_date` (required, date format YYYY-MM-DD), `notes` (nullable, string, max:1000).
-- **D-18:** `PATCH /expenses/{id}` allows partial update — all fields optional, but any provided field must pass the same validation rules.
-- **D-19:** Owner check on all expense routes returns **404 not 403** (consistent with Phase 3 category pattern — no resource enumeration).
-- **D-20:** `GET /categories/{category}` (show single category) was intentionally deferred from Phase 3. Phase 4 ADDS this endpoint (needed by the expense form to resolve the category for display). Same ownership check pattern.
-
-### Currency
-- **D-21:** The `currency` field is included in the expense form as a **small read-only label showing "THB"** (not a dropdown). The value is stored as `'THB'` automatically. Multi-currency is v2 — we keep the column but don't expose selection in the UI.
+### Currency Handling
+- **D-13:** Currency field is **THB by default, hidden from the user** — no currency UI control in v1. The backend stores `"THB"` silently on every expense record. Multi-currency UI is explicitly deferred to v2 per `CLAUDE.md`.
+- **D-14:** All displayed amounts show the **฿ symbol** (e.g., "฿ 250.00") in both the list cards and the detail view.
 
 ### Claude's Discretion
-- Exact column order in the paginator response meta (`current_page`, `last_page`, `per_page`, `total`) — planner picks consistent with Laravel's paginator
-- Whether to use `$request->validated()` or individual field extraction in the controller — planner decides
-- Whether the expense `Expense` model has `$casts` for `amount` (decimal), `expense_date` (date), and `user_id` (integer) — planner should add these for type safety
-- Exact card grid column breakpoints and card height — planner picks, should be consistent with categories page
-- Whether a "Clear filters" button appears when any filter is active — planner adds it if it fits naturally
+- Exact card layout CSS / spacing — follow the minimal inline style pattern from Phase 1/2 (no CSS framework). Match `ui-mockups/` visual direction where practical.
+- HTTP method for edit: PUT for full replacement, PATCH for partial — planner decides how to wire both in the frontend form (likely PUT only for simplicity in v1 UI, PATCH available via API).
+- Category dropdown in the form — planner decides how to load the category list (GET /api/categories, same JWT interceptor).
+- Date field format — ISO YYYY-MM-DD input (`<input type="date">`) consistent with CLAUDE.md constraint.
 
 </decisions>
 
@@ -67,25 +50,25 @@ Users can log new expenses, view their full expense list with pagination and fil
 
 ### Requirements & Roadmap
 - `.planning/REQUIREMENTS.md` — EXP-01 through EXP-06 (the 6 requirements this phase must satisfy)
-- `.planning/ROADMAP.md` — Phase 4 success criteria (6 criteria)
-- `.planning/PROJECT.md` — locked decisions: MySQL, JWT, API envelope, response macros, constraints
+- `.planning/ROADMAP.md` — Phase 4 success criteria (6 criteria — all must be met)
+- `.planning/PROJECT.md` — locked decisions: MySQL, JWT, API envelope `{success, data, message}`, amount > 0 / max 2 decimals / ISO dates, multi-currency deferred to v2
 
-### Existing Backend (Phase 1-3 — read before planning API)
-- `backend/database/migrations/2026_01_01_000002_create_expenses_table.php` — current expenses schema: NO `user_id`, has `is_recurring` + `recurring_id` (to be dropped in Phase 4)
-- `backend/database/migrations/2026_05_10_000001_add_user_id_to_categories_table.php` — migration pattern for adding user_id FK (follow same approach for expenses)
-- `backend/app/Http/Controllers/Api/CategoryController.php` — ownership check pattern (404 not 403), response envelope usage, validation array syntax for regex rules
-- `backend/app/Models/Category.php` — model with `$casts`, `$fillable`, `$hidden` — follow same structure for Expense model
-- `backend/routes/api.php` — existing jwt.auth group structure; Phase 4 adds expense routes here + GET /categories/{category}
-- `backend/app/Http/Controllers/Api/AuthController.php` — DB::transaction pattern for atomic user + category seeding
+### Existing Backend (Phase 1 scaffold — read before planning API)
+- `backend/app/Providers/AppServiceProvider.php` — `response()->success()` and `response()->error()` macros; ALL expense controllers MUST use these
+- `backend/routes/api.php` — add all expense routes here (currently only GET /health exists)
+- `backend/database/migrations/` — expenses table migration already created in Phase 1 (columns: id, user_id, amount, currency, category_id, description, date, timestamps)
+- `backend/config/auth.php` — api guard driver = jwt; do not change
+- `CLAUDE.md` — constraints: MySQL only, no v2 features (budget/CSV/recurring), response envelope, ISO dates, amount validation
 
-### Existing Frontend (Phase 2-3 — read before planning UI)
-- `frontend/src/pages/CategoriesPage.tsx` — full reference implementation: cards grid, modal create/edit, inline delete confirmation, useEffect with cancelled guard, filter state. Phase 4 follows ALL established patterns here.
-- `frontend/src/api/categories.ts` — API module pattern: interface definitions, Envelope generic, getCategories / createCategory / updateCategory / deleteCategory
-- `frontend/src/App.tsx` — `/expenses` route already exists and is wrapped in ProtectedRoute
-- `frontend/src/api/client.ts` — Axios instance with JWT interceptor; `VITE_API_URL` as base
+### Existing Frontend (Phase 1/2 scaffold — read before planning UI)
+- `frontend/src/api/client.ts` — axios client with Bearer token interceptor; all expense API calls use this client
+- `frontend/src/App.tsx` — add `/expenses/new`, `/expenses/:id`, `/expenses/:id/edit` routes here; wrap in `ProtectedRoute` (Phase 2 adds this component)
+- `frontend/src/pages/ExpensesPage.tsx` — current stub to replace with full list implementation
+- `frontend/src/pages/AuthPage.tsx` — reference for inline error + loading button pattern (Phase 2 D-08, D-09)
 
-### Phase 3 Review (known issues to NOT repeat)
-- `.planning/phases/03-categories/03-REVIEW.md` — CR-03 (use regex array syntax for validation), WR-01 ($casts for integer FK), WR-03 (don't reset confirm state on error), WR-04 (cancelled guard in useEffect), WR-05 (DB::transaction)
+### UI Reference (design direction, not binding)
+- `ui-mockups/add-screen.jsx` — add expense form mockup (card layout, numeric keypad style, amount prominent)
+- `ui-mockups/app.jsx` — main list view mockup (card-based expenses, category icons, date display)
 
 </canonical_refs>
 
@@ -93,40 +76,50 @@ Users can log new expenses, view their full expense list with pagination and fil
 ## Existing Code Insights
 
 ### Reusable Assets
-- `CategoriesPage.tsx` — modal overlay, cards grid, inline delete confirmation, cancelled useEffect guard. Phase 4 ExpensesPage reuses ALL of these patterns directly.
-- `categories.ts` API module — interface + function export pattern for expense API module
-- `lucide-react` — already installed; icons available for expense cards (e.g., `Receipt`, `DollarSign`, `Calendar`, `Pencil`, `Trash2`)
+- `frontend/src/api/client.ts` — axios instance with JWT Bearer interceptor already configured. All expense API calls (GET /api/expenses, POST, PUT, PATCH, DELETE) use this client without any auth setup.
+- `backend/app/Providers/AppServiceProvider.php` — `response()->success($data, $message)` and `response()->error($message, $errors, $code)` macros. Every expense controller action must use these — no raw `return response()->json(...)`.
+- Phase 2 `ProtectedRoute` component — wraps expense routes; if user is unauthenticated, redirects to `/auth`. Expense pages are protected by default.
 
 ### Established Patterns
-- **Ownership check returns 404** — all resource routes check `resource->user_id !== auth()->id()` and return `response()->error('Not found', [], 404)`
-- **No CSS framework** — inline styles only throughout the frontend; no className props, no Tailwind, no Bootstrap
-- **Response macro** — `response()->success(data, message)` and `response()->error(message, errors, status)` are wired in Phase 1
-- **JWT middleware** — `jwt.auth` group in `routes/api.php` handles all protected routes
+- API response envelope: `{success, data, message}` on success; `{success: false, message, errors: [{field, message}]}` on failure — ALL expense endpoints follow this without exception.
+- Frontend pages use minimal inline styles (`fontFamily: 'sans-serif', padding: '2rem'`) — expense UI follows this pattern, no CSS framework introduced.
+- Error display: single message inline below submit button (from Phase 2 D-08) — expense form follows the same pattern.
+- Pagination: backend already supports `?page=&limit=` query params on list endpoints (Phase 1 scaffold design). Frontend sends these params via axios, renders Prev/Next controls.
 
 ### Integration Points
-- Expense → Category (FK): expense form category dropdown must load from `GET /categories` and validate that the chosen category belongs to the authenticated user
-- Phase 4 adds `GET /categories/{category}` (show) which was deferred from Phase 3 — must follow same ownership pattern as update/destroy
-- Phase 5 (analytics) will query expenses by `user_id` — the `user_id` index added in Phase 4's migration is critical for performance
+- `backend/routes/api.php` — add expense routes inside a `Route::middleware('jwt.auth')->group(...)` block:
+  - `POST /api/expenses` (create)
+  - `GET /api/expenses` (list with `?page=&limit=&category_id=&date_from=&date_to=&amount_min=&amount_max=`)
+  - `GET /api/expenses/{id}` (detail)
+  - `PUT /api/expenses/{id}` (full update)
+  - `PATCH /api/expenses/{id}` (partial update)
+  - `DELETE /api/expenses/{id}`
+- `frontend/src/App.tsx` — add routes: `/expenses` (list), `/expenses/new` (add form), `/expenses/:id` (detail), `/expenses/:id/edit` (edit form). All wrapped in `ProtectedRoute`.
+- Category list for the expense form dropdown: `GET /api/categories` (Phase 3 endpoint) — expense form fetches this on mount to populate the category selector.
 
 </code_context>
 
 <specifics>
 ## Specific Ideas
 
-- Category FK validation in store/update: use `Rule::exists('categories', 'id')->where('user_id', auth()->id())` to prevent assigning expenses to another user's categories
-- The filter bar should include a "Clear" button that resets all filters at once (common UX expectation)
-- Phase 3's `CategoryController::destroy()` has a `TODO(Phase 4)` comment at line ~98 noting that the expense check must be scoped to `auth()->id()` once `expenses.user_id` exists — Phase 4 MUST update this guard
+- The `ui-mockups/add-screen.jsx` shows a full-page add form with amount prominently displayed at the top and a category grid below. The card style (rounded corners, shadow, `borderRadius: 20`) matches what the expense list cards should look like.
+- The mockup uses Thai labels ("เพิ่มรายการใหม่"). For v1, English labels are fine (or Thai — planner's choice consistent with the rest of the UI).
+- The inline "Are you sure?" delete confirm can be implemented as a simple boolean state toggle (`showDeleteConfirm`) that replaces the Delete button with "Confirm Delete" + "Cancel" — no modal library needed.
+- Amount input: `<input type="number" step="0.01" min="0.01">` — browser validates format, backend validates amount > 0 and max 2 decimals.
 
 </specifics>
 
 <deferred>
 ## Deferred Ideas
 
-None — discussion stayed within phase scope.
+- **Multi-currency dropdown** — user-selectable currency (THB/USD/EUR/JPY) deferred to v2 per `CLAUDE.md` constraint.
+- **Delete from list card** — swipe-to-delete or per-card delete button on the list view. Deferred to v2 for simplicity; v1 delete is on the detail page only.
+- **Slip/receipt image upload** — shown in `ui-mockups/add-screen.jsx` but explicitly out of scope (no OCR in v1).
+- **Income tracking / "type" toggle** — mockup shows income/expense toggle but REQUIREMENTS.md has no income tracking requirement. Deferred to v2.
 
 </deferred>
 
 ---
 
-*Phase: 4-Expense Management*
+*Phase: 4-Expense-Management*
 *Context gathered: 2026-05-10*

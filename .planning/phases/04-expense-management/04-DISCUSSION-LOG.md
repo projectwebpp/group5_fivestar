@@ -4,140 +4,149 @@
 > Decisions are captured in CONTEXT.md — this log preserves the alternatives considered.
 
 **Date:** 2026-05-10
-**Phase:** 4-Expense Management
-**Areas discussed:** Expense form placement, List layout & display, Filter UX, Pagination controls
+**Phase:** 04-expense-management
+**Areas discussed:** Expense list layout, Filter & pagination UX, Add/Edit form routing, Currency handling
 
 ---
 
-## Expense form placement
+## Expense list layout
 
 | Option | Description | Selected |
 |--------|-------------|----------|
-| Modal on the list page | Consistent with Phase 3 — categories page already uses a modal for create/edit. Same 'Add' button → modal pattern. No new route needed. | ✓ |
-| Separate /expenses/new route | Full-page form at its own URL. More space for fields, easier deep-linking, but adds a new route and navigation back-button flow. | |
-| Inline form at top of list | Form is always visible above the expense list. Quick entry but takes up permanent screen space. | |
+| Card per expense | Matches existing mockups. Amount prominent, category name/icon, date, description snippet. | ✓ |
+| Compact rows | Table-like rows. More expenses visible without scrolling. Diverges from mockup style. | |
+| Grouped by date | Expenses grouped under date headers. Common in finance apps but adds grouping complexity. | |
 
-**User's choice:** Modal on the list page (Recommended)
-**Notes:** Consistent with the existing categories page pattern.
-
-### Edit flow
+**User's choice:** Card per expense
 
 | Option | Description | Selected |
 |--------|-------------|----------|
-| Same modal, pre-filled | Click edit on an expense row → the add-expense modal opens with fields pre-filled. One component handles both create and edit. Same pattern as categories. | ✓ |
-| Separate edit modal | A dedicated edit modal distinct from the add form. | |
-| You decide | Claude picks the cleanest approach. | |
+| Amount + category + date | Three most scannable fields. Description only in detail. | ✓ |
+| Amount + category + date + description snippet | First ~40 chars of description on card. | |
+| Amount + category + date + currency | Shows currency code on each card. | |
 
-**User's choice:** Same modal, pre-filled (Recommended)
-
-### Detail view
+**User's choice:** Amount + category + date only
 
 | Option | Description | Selected |
 |--------|-------------|----------|
-| No separate detail view — edit modal IS the detail | EXP-04 satisfied by the edit modal showing all fields. Simpler flow, no extra route. | ✓ |
-| Click row opens read-only detail modal, then Edit opens form | Two-step UX — view then edit. | |
-| Click row goes to /expenses/{id} detail page | Dedicated detail route with full layout. | |
+| Separate detail page /expenses/:id | Clean URL, browser back returns to list. | ✓ |
+| Expand inline below the card | Card expands in place. No navigation. | |
+| Slide-in drawer/panel | Detail slides from right. Adds animation complexity. | |
 
-**User's choice:** No separate detail view (Recommended)
-**Notes:** EXP-04 (view single expense) is satisfied by the pre-filled edit modal.
+**User's choice:** Separate detail page /expenses/:id
+
+| Option | Description | Selected |
+|--------|-------------|----------|
+| Simple text message + Add button | Minimal, fast to build. | ✓ |
+| Illustration + message | Empty state illustration. More polished. | |
+| You decide | Leave to planner. | |
+
+**User's choice:** Simple text message + Add button
 
 ---
 
-## List layout & display
+## Filter & pagination UX
 
 | Option | Description | Selected |
 |--------|-------------|----------|
-| Compact list rows | Each expense is a horizontal row: category color swatch + icon on the left, description + date in the middle, amount (bold) on the right. Dense, bank-statement style. | |
-| Cards grid | Like the categories page — each expense is a card. | ✓ |
-| Table with columns | Structured table: Date, Category, Description, Amount columns. | |
+| Collapsible filter bar above list | Toggle button shows/hides filter inputs. Clean when closed. | ✓ |
+| Always-visible filter row | Always shown above list. Takes permanent vertical space. | |
+| Filter modal/drawer | Tapping Filter opens a modal. Good for many filters. | |
 
-**User's choice:** Cards grid
-**Notes:** User explicitly chose cards even though the assistant noted it could be dense at scale. Consistent with the categories page aesthetic.
-
-### Card content
+**User's choice:** Collapsible filter bar
 
 | Option | Description | Selected |
 |--------|-------------|----------|
-| Category color + icon, description, amount, date | Card header uses category color as background strip. Icon + category name on one line. Description on next line. Amount (bold) and date at the bottom. | ✓ |
-| Amount prominent, description secondary | Large amount number dominates the card. | |
-| You decide | Claude picks the layout matching Phase 3 card style. | |
+| Previous / Next + page indicator | Simple, works well on mobile. | ✓ |
+| Numbered page buttons | 1 2 3 … 8. Needs responsive truncation logic. | |
+| Load more button | Appends items. No separate pages. | |
 
-**User's choice:** Category color + icon, description, amount, date (Recommended)
-
-### Card actions
+**User's choice:** Previous / Next buttons + page indicator
 
 | Option | Description | Selected |
 |--------|-------------|----------|
-| Edit + delete icons on the card | Same pattern as categories — edit pencil icon and trash icon visible on each card. Delete shows inline confirmation. | ✓ |
-| Actions revealed on hover/tap | Card normally shows no action buttons. On hover/tap, icons appear. | |
-| Click card opens modal, actions inside modal | Card is entirely clickable; edit/delete are inside the modal. | |
+| 10 per page, fixed | Simple. No user-facing page size control. | ✓ |
+| 10 per page, user can change | Show: 10 / 25 / 50 control. | |
+| 20 per page, fixed | More items per page. | |
 
-**User's choice:** Edit + delete icons on the card (Recommended)
+**User's choice:** 10 per page, fixed
+
+| Option | Description | Selected |
+|--------|-------------|----------|
+| Apply button | Prevents API call on every keystroke. | ✓ |
+| Auto-apply on change | Filter updates trigger refresh immediately. | |
+| You decide | Apply button is standard for multi-field filters. | |
+
+**User's choice:** Apply button
 
 ---
 
-## Filter UX
+## Add/Edit form routing
 
 | Option | Description | Selected |
 |--------|-------------|----------|
-| Always-visible filter bar above the list | Filter controls always shown above the expense cards. | ✓ |
-| Collapsible 'Show filters' toggle | Filters hidden behind a toggle button. | |
-| Filter modal / drawer | A 'Filter' button opens a modal with all filter controls. | |
+| Same form, different routes | /expenses/new and /expenses/:id/edit render same component. | ✓ |
+| Same form, one route /expenses/form | Optional ID via query param. | |
+| Separate add and edit components | More code duplication. Fully independent. | |
 
-**User's choice:** Always-visible filter bar (Recommended)
-
-### Filter apply behavior
+**User's choice:** Same form, routes: /expenses/new and /expenses/:id/edit
 
 | Option | Description | Selected |
 |--------|-------------|----------|
-| Auto-apply on change | Each filter change immediately re-fetches the list. | ✓ |
-| Apply button required | User sets all filters then clicks Apply. | |
-| Auto for quick filters, Apply for date range | Hybrid — category auto-applies; date/amount range need Apply. | |
+| Back to /expenses list | User sees new/updated expense immediately. | ✓ |
+| To /expenses/:id detail | User sees saved expense detail. One more click to get back. | |
+| Stay on form with success message | Good for adding multiple expenses quickly. | |
 
-**User's choice:** Auto-apply on change (Recommended)
-
-### Filter controls
+**User's choice:** Redirect to /expenses list after save
 
 | Option | Description | Selected |
 |--------|-------------|----------|
-| Date: two date inputs (from/to). Category: dropdown. Amount: two number inputs (min/max). | Native HTML inputs. No library dependencies. | ✓ |
-| Date picker component. Category: multi-select chips. Amount: range slider. | Richer UX but requires extra libraries. | |
-| You decide | Claude picks simplest controls without adding libraries. | |
+| Delete on detail page, confirm dialog | window.confirm() or inline "Are you sure?" | ✓ |
+| Delete on detail page, no confirmation | One-click delete. | |
+| Delete from list card, confirm dialog | Per-card action button on the list. | |
 
-**User's choice:** Native HTML inputs (Recommended)
+**User's choice:** Delete button on detail page with inline confirm
+
+| Option | Description | Selected |
+|--------|-------------|----------|
+| Inline below submit button | Matches Phase 2 auth pattern (D-08). | ✓ |
+| Field-level errors | Red text under each invalid field. | |
+| You decide | Inline below submit is fine for consistency. | |
+
+**User's choice:** Inline below submit button (consistent with Phase 2)
 
 ---
 
-## Pagination controls
+## Currency handling
 
 | Option | Description | Selected |
 |--------|-------------|----------|
-| Previous / Next buttons with page indicator | '‹ Previous' and 'Next ›' buttons with 'Page 2 of 5' indicator. | ✓ |
-| Numbered page links | 1 2 3 ... 10 style page links. | |
-| Infinite scroll | No explicit page controls — user scrolls and more loads. | |
+| THB default, hidden from user | Stored as 'THB' always. No UI control. | ✓ |
+| THB default, user can change via dropdown | Dropdown with THB/USD/EUR/JPY. | |
+| User types currency code manually | Free-text field. Prone to typos. | |
 
-**User's choice:** Previous / Next buttons with page indicator (Recommended)
-
-### Page size
+**User's choice:** THB default, hidden from user
 
 | Option | Description | Selected |
 |--------|-------------|----------|
-| 10 per page, no user control | Fixed page size. Simple UI. | ✓ |
-| 20 per page, no user control | Slightly denser view. | |
-| User can choose 10 / 20 / 50 per page | Per-page selector dropdown. | |
+| Yes, show ฿ symbol | Amounts displayed as "฿ 250.00" | ✓ |
+| No symbol, just the number | Amounts shown as "250.00" only. | |
+| You decide | Showing ฿ is conventional for THB apps. | |
 
-**User's choice:** 10 per page, no user control (Recommended)
+**User's choice:** Show ฿ symbol next to all amounts
 
 ---
 
 ## Claude's Discretion
 
-- Exact column order in paginator response meta
-- Whether to use `$request->validated()` or individual field extraction
-- `$casts` for Expense model (amount, expense_date, user_id, category_id)
-- Exact card grid column breakpoints and card height (should match categories page)
-- Whether a "Clear filters" button appears when any filter is active
+- Card layout CSS/spacing — minimal inline styles, match ui-mockups/ direction
+- HTTP method for edit: PUT vs PATCH wiring in frontend form
+- Category dropdown population: GET /api/categories on form mount
+- Date field: `<input type="date">` with ISO YYYY-MM-DD value
 
 ## Deferred Ideas
 
-None — discussion stayed within phase scope.
+- Multi-currency dropdown (THB/USD/EUR/JPY) — v2 per CLAUDE.md
+- Delete from list card (swipe/per-card button) — v2 simplification
+- Slip/receipt image upload — shown in mockup, out of scope (no OCR in v1)
+- Income tracking / type toggle — shown in mockup, not in REQUIREMENTS.md v1

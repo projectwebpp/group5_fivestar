@@ -1,8 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(*)",
-      "Skill(gsd-code-review)"
+      "WebSearch",
+      "Bash(dpkg -l 'php*')",
+      "Bash(php8.3 --version)",
+      "Bash(composer --version)",
+      "Bash(apt-cache search *)"
     ]
   }
 }
