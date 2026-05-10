@@ -12,6 +12,7 @@ export default function ExpenseFormPage({ mode }: { mode: 'create' | 'edit' }) {
   const [amount, setAmount] = useState('');
   const [categoryId, setCategoryId] = useState<number | ''>('');
   const [description, setDescription] = useState('');
+  const [notes, setNotes] = useState('');
   const today = new Date().toISOString().slice(0, 10);
   const [date, setDate] = useState(today);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -36,6 +37,7 @@ export default function ExpenseFormPage({ mode }: { mode: 'create' | 'edit' }) {
           setCategoryId(e.category_id);
           setDescription(e.description);
           setDate(e.date);
+          setNotes(e.notes ?? '');
         })
         .catch(() => setError('Failed to load expense.'))
         .finally(() => setLoadingExpense(false));
@@ -68,6 +70,7 @@ export default function ExpenseFormPage({ mode }: { mode: 'create' | 'edit' }) {
         category_id: Number(categoryId),
         description: description.trim(),
         date,
+        notes: notes.trim() || undefined,
       };
       if (mode === 'create') {
         await createExpense(payload as Parameters<typeof createExpense>[0]);
@@ -183,6 +186,25 @@ export default function ExpenseFormPage({ mode }: { mode: 'create' | 'edit' }) {
             border: '1px solid rgba(31,27,22,0.04)',
             borderRadius: 8,
             marginBottom: 16,
+          }}
+        />
+
+        <label style={{ display: 'block', fontSize: 13, color: '#7A7064', marginBottom: 4 }}>Notes (optional)</label>
+        <textarea
+          value={notes}
+          onChange={e => setNotes(e.target.value)}
+          rows={3}
+          maxLength={1000}
+          style={{
+            width: '100%',
+            fontSize: 15,
+            padding: 8,
+            background: '#EDE7DA',
+            border: '1px solid rgba(31,27,22,0.04)',
+            borderRadius: 8,
+            marginBottom: 16,
+            resize: 'vertical',
+            fontFamily: 'inherit',
           }}
         />
 
