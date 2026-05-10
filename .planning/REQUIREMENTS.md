@@ -23,11 +23,11 @@
 
 ### Categories
 
-- [ ] **CAT-01**: System provides predefined default categories
-- [ ] **CAT-02**: User can create a custom category (name, icon, color)
-- [ ] **CAT-03**: User can edit a category
-- [ ] **CAT-04**: User can delete a category (blocked if active expenses reference it)
-- [ ] **CAT-05**: User can view all categories
+- [x] **CAT-01**: System provides predefined default categories
+- [x] **CAT-02**: User can create a custom category (name, icon, color)
+- [x] **CAT-03**: User can edit a category
+- [x] **CAT-04**: User can delete a category (blocked if active expenses reference it)
+- [x] **CAT-05**: User can view all categories
 
 ### Analytics & Reports
 
@@ -86,11 +86,11 @@ Updated during roadmap creation.
 | EXP-04 | Phase 4 | Pending |
 | EXP-05 | Phase 4 | Pending |
 | EXP-06 | Phase 4 | Pending |
-| CAT-01 | Phase 3 | Pending |
-| CAT-02 | Phase 3 | Pending |
-| CAT-03 | Phase 3 | Pending |
-| CAT-04 | Phase 3 | Pending |
-| CAT-05 | Phase 3 | Pending |
+| CAT-01 | Phase 3 | Complete |
+| CAT-02 | Phase 3 | Complete |
+| CAT-03 | Phase 3 | Complete |
+| CAT-04 | Phase 3 | Complete |
+| CAT-05 | Phase 3 | Complete |
 | REP-01 | Phase 5 | Pending |
 | REP-02 | Phase 5 | Pending |
 | REP-03 | Phase 5 | Pending |

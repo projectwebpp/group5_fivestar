@@ -71,7 +71,7 @@ Plans:
 **Plans**: 2 plans (Wave 1: 03-01 Category API | Wave 2: 03-02 Categories UI)
 
 Plans:
-- [ ] 03-01-PLAN.md — Category API (migration, models, controller, routes, AuthController seeding, CategorySeeder fix)
+- [x] 03-01-PLAN.md — Category API (migration, models, controller, routes, AuthController seeding, CategorySeeder fix)
 - [ ] 03-02-PLAN.md — Categories UI (lucide-react install, categories API module, CategoriesPage cards grid + modal + inline delete)
 **UI hint**: yes
 
@@ -121,6 +121,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete | 2026-05-09 |
 | 2. Authentication | 0/2 | Not started | - |
-| 3. Categories | 0/2 | Planned | - |
+| 3. Categories | 1/2 | In Progress|  |
 | 4. Expense Management | 0/3 | Not started | - |
 | 5. Analytics & Reports | 0/2 | Not started | - |
