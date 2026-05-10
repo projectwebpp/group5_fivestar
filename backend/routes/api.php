@@ -27,6 +27,8 @@ Route::middleware('jwt.auth')->group(function () {
     Route::post('categories',              [CategoryController::class, 'store']);
     Route::put('categories/{category}',    [CategoryController::class, 'update']);
     Route::delete('categories/{category}', [CategoryController::class, 'destroy']);
+    // NOTE: GET /categories/{category} (show) is intentionally deferred to Phase 4.
+    //       When added, it MUST include the same ownership check pattern as update/destroy.
     // Phase 4: expense routes
     // Phase 5: analytics routes
 });
