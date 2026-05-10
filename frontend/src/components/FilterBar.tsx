@@ -17,6 +17,11 @@ export default function FilterBar({ open, onToggle, filters, onApply, categories
     onApply(draft);
   };
 
+  const handleClear = () => {
+    setDraft({ page: 1 });
+    onApply({ page: 1 });
+  };
+
   return (
     <div>
       <button
@@ -104,22 +109,38 @@ export default function FilterBar({ open, onToggle, filters, onApply, categories
             </select>
           </label>
 
-          <button
-            onClick={handleApply}
-            style={{
-              padding: '8px 16px',
-              background: 'oklch(48% 0.10 195)',
-              color: '#fff',
-              fontWeight: 700,
-              fontSize: 14,
-              border: 'none',
-              borderRadius: 12,
-              cursor: 'pointer',
-              alignSelf: 'flex-start',
-            }}
-          >
-            Apply
-          </button>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button
+              onClick={handleApply}
+              style={{
+                padding: '8px 16px',
+                background: 'oklch(48% 0.10 195)',
+                color: '#fff',
+                fontWeight: 700,
+                fontSize: 14,
+                border: 'none',
+                borderRadius: 12,
+                cursor: 'pointer',
+              }}
+            >
+              Apply
+            </button>
+            <button
+              onClick={handleClear}
+              style={{
+                padding: '8px 16px',
+                background: '#EDE7DA',
+                color: '#7A7064',
+                fontWeight: 700,
+                fontSize: 14,
+                border: 'none',
+                borderRadius: 12,
+                cursor: 'pointer',
+              }}
+            >
+              Clear
+            </button>
+          </div>
         </div>
       )}
     </div>
