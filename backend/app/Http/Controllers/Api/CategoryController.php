@@ -66,10 +66,9 @@ class CategoryController extends Controller
             return response()->error('Not found', [], 404);
         }
 
-        // TODO(Phase 4): scope this query to auth()->id() once expenses.user_id exists.
-        // At that point: Expense::where('category_id', $category->id)
-        //                         ->where('user_id', auth()->id())->exists()
-        if (Expense::where('category_id', $category->id)->exists()) {
+        if (Expense::where('category_id', $category->id)
+                  ->where('user_id', auth()->id())
+                  ->exists()) {
             return response()->error('Category has expenses and cannot be deleted', [], 422);
         }
 
