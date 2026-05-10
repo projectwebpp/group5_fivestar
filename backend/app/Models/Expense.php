@@ -10,6 +10,7 @@ class Expense extends Model
     protected $fillable = [
         'user_id',
         'amount',
+        'currency',
         'category_id',
         'description',
         'expense_date',
