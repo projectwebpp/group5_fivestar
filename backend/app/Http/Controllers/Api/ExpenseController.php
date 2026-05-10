@@ -13,6 +13,14 @@ class ExpenseController extends Controller
 {
     public function index(Request $request)
     {
+        $request->validate([
+            'date_from'   => ['sometimes', 'date_format:Y-m-d'],
+            'date_to'     => ['sometimes', 'date_format:Y-m-d', 'after_or_equal:date_from'],
+            'amount_min'  => ['sometimes', 'numeric', 'min:0'],
+            'amount_max'  => ['sometimes', 'numeric', 'min:0', 'gte:amount_min'],
+            'category_id' => ['sometimes', 'integer'],
+        ]);
+
         $q = Expense::query()->where('user_id', Auth::id());
 
         if ($request->filled('category_id')) {
