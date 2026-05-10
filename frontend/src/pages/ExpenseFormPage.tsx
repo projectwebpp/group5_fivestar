@@ -54,6 +54,10 @@ export default function ExpenseFormPage({ mode }: { mode: 'create' | 'edit' }) {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    if (mode === 'edit' && !id) {
+      setError('Invalid expense ID.');
+      return;
+    }
     const v = validate();
     if (v) { setError(v); return; }
     setError(null);
