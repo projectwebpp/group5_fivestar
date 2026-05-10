@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\HealthController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,7 +22,11 @@ Route::middleware('jwt.auth')->prefix('auth')->group(function () {
 
 // Protected API surface (AUTH-04) — populated in Phases 3-5
 Route::middleware('jwt.auth')->group(function () {
-    // Phase 3: category routes
+    // Phase 3: Categories (CAT-01 through CAT-05)
+    Route::get('categories',               [CategoryController::class, 'index']);
+    Route::post('categories',              [CategoryController::class, 'store']);
+    Route::put('categories/{category}',    [CategoryController::class, 'update']);
+    Route::delete('categories/{category}', [CategoryController::class, 'destroy']);
     // Phase 4: expense routes
     // Phase 5: analytics routes
 });
