@@ -30,7 +30,7 @@ class CategoryController extends Controller
                 Rule::unique('categories')->where('user_id', auth()->id()),
             ],
             'icon'  => 'required|string|max:50',
-            'color' => 'required|string|size:7',
+            'color' => ['required', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
         ]);
 
         $category = Category::create(array_merge($data, ['user_id' => auth()->id()]));
@@ -52,7 +52,7 @@ class CategoryController extends Controller
                 Rule::unique('categories')->where('user_id', auth()->id())->ignore($category->id),
             ],
             'icon'  => 'required|string|max:50',
-            'color' => 'required|string|size:7',
+            'color' => ['required', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
         ]);
 
         $category->update($data);
@@ -66,8 +66,9 @@ class CategoryController extends Controller
             return response()->error('Not found', [], 404);
         }
 
-        // Deletion guard — expenses.user_id does NOT exist yet (added in Phase 4).
-        // Ownership is already enforced above, so this guard is correctly scoped.
+        // TODO(Phase 4): scope this query to auth()->id() once expenses.user_id exists.
+        // At that point: Expense::where('category_id', $category->id)
+        //                         ->where('user_id', auth()->id())->exists()
         if (Expense::where('category_id', $category->id)->exists()) {
             return response()->error('Category has expenses and cannot be deleted', [], 422);
         }
