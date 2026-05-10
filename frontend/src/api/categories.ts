@@ -22,9 +22,6 @@ interface Envelope<T> {
   message: string;
 }
 
-export const getCategories = () =>
-  apiClient.get<Envelope<Category[]>>('/categories');
-
 export const createCategory = (payload: CategoryPayload) =>
   apiClient.post<Envelope<Category>>('/categories', payload);
 
