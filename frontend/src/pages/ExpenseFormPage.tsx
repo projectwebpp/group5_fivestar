@@ -23,6 +23,7 @@ export default function ExpenseFormPage({ mode }: { mode: 'create' | 'edit' }) {
   useEffect(() => {
     listCategories()
       .then(setCategories)
+      .catch(() => setError('Failed to load categories. Please refresh.'))
       .finally(() => setCategoriesLoading(false));
   }, []);
 

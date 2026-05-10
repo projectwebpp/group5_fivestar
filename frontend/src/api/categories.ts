@@ -35,11 +35,7 @@ export const deleteCategory = (id: number) =>
   apiClient.delete<Envelope<null>>(`/categories/${id}`);
 
 export async function listCategories(): Promise<Category[]> {
-  try {
-    const res = await apiClient.get<Envelope<Category[] | { items: Category[] }>>('/categories');
-    const d = res.data.data;
-    return Array.isArray(d) ? d : (d.items ?? []);
-  } catch {
-    return [];
-  }
+  const res = await apiClient.get<Envelope<Category[] | { items: Category[] }>>('/categories');
+  const d = res.data.data;
+  return Array.isArray(d) ? d : (d.items ?? []);
 }
