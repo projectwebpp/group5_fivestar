@@ -42,9 +42,9 @@ Declared values (must be multiples of 4):
 | 3xl | 64px | Not used in this phase |
 
 Exceptions:
-- Amount input display font context: padding `24px 24px 28px` on the amount card (from mockup) — approved 28px exception for visual breathing room around the prominent amount field.
-- Touch targets for Prev/Next pagination buttons: minimum 44px height (accessibility).
-- Back/cancel button on form header: 40×40px (mockup spec — matches 40px = 10×4 rounding).
+- Amount input display font context: padding `24px 24px 24px` on the amount card — uniform lg padding on all sides.
+- Touch targets for Prev/Next pagination buttons: minimum 48px height (meets WCAG 44px minimum, rounded up to scale).
+- Back/cancel button on form header: 48×48px touch target (scale-aligned, meets accessibility minimum).
 
 ---
 
@@ -52,16 +52,18 @@ Exceptions:
 
 All sizes use `fontFamily: 'sans-serif'`. No external font loaded.
 
+**Weight contract: exactly 2 weights.**
+- 400 (regular) — all body copy, labels, muted sub-labels, helper text, date group headers, pagination indicator
+- 700 (bold) — all headings, button labels, CTAs, and the prominent amount display
+
 | Role | Size | Weight | Line Height | Usage |
 |------|------|--------|-------------|-------|
 | Body | 15px | 400 (regular) | 1.5 | List card category name, description text, filter labels, form field labels |
-| Label | 13px | 500 (medium) | 1.4 | Muted sub-labels (date group headers, filter toggle label, pagination "Page X of Y"), form field helper text |
+| Label | 13px | 400 (regular) | 1.4 | Muted sub-labels (date group headers, filter toggle label, pagination "Page X of Y"), form field helper text |
 | Heading | 22px | 700 (bold) | 1.2 | Page title ("Expenses", "Add Expense", "Edit Expense", expense detail heading) |
-| Display | 36px | 800 (extrabold) | 1.1 | Amount on detail view and form amount field (prominent large number matching mockup) |
+| Display | 36px | 700 (bold) | 1.1 | Amount on detail view and form amount field (prominent large number matching mockup) |
 
-**Weight contract:** Only two weights used in interactive content — 400 (regular) for body copy and 600 (semibold) for buttons, active nav items, and CTA labels. 700/800 reserved for headings and the amount display only.
-
-**Source:** Derived from `app.jsx` and `add-screen.jsx` mockup font-size/font-weight declarations.
+**Source:** Derived from `app.jsx` and `add-screen.jsx` mockup font-size declarations. Weights collapsed to 2-step contract per design system constraint.
 
 ---
 
@@ -93,6 +95,8 @@ The mockup defines a "cream" light theme as default. All values below are from t
 
 **Destructive reserved for:** "Delete Expense" button on detail page, inline "Confirm Delete" button (the confirming step), and the inline form validation error message text.
 
+**Primary focal point for ExpensesPage:** The accent-colored "Add Expense" button in the page header is the primary focal point — it must be the most visually prominent interactive element on the list screen.
+
 **Source:** `app.jsx` `makeTheme()` cream theme values. CONTEXT.md D-12, D-14.
 
 ---
@@ -118,7 +122,7 @@ All components implemented as React functional components with inline styles. No
 | `Pagination` | `page`, `totalPages`, `onPrev`, `onNext` | Prev / Next buttons + "Page X of Y" label |
 | `EmptyState` | `filtered` | Text message + "Add Expense" button; copy varies if filtered (see Copywriting) |
 | `InlineError` | `message` | Red text block below submit button; single message |
-| `DeleteConfirm` | `onConfirm`, `onCancel` | Inline boolean-toggle confirm: "Confirm Delete" + "Cancel" buttons replace Delete button |
+| `DeleteConfirm` | `onConfirm`, `onCancel` | Inline boolean-toggle confirm: "Confirm Delete" + "Keep Expense" buttons replace Delete button |
 | `LoadingButton` | `loading`, `label`, `onClick` | Button that shows spinner/disabled state while awaiting API; consistent with Phase 2 pattern |
 
 ### Expense Card Layout (D-01, D-02)
@@ -129,26 +133,25 @@ All components implemented as React functional components with inline styles. No
 └─────────────────────────────────────────────┘
 ```
 
-- Amount: left-aligned, 15px semibold (600), ink color, ฿ symbol prepended with space ("฿ 250.00")
+- Amount: left-aligned, 15px bold (700), ink color, ฿ symbol prepended with space ("฿ 250.00")
 - Category name: center or flex-spaced, 15px regular (400), muted color
-- Date: right-aligned, 13px medium (500), muted color, formatted as "10 May" or "DD MMM"
+- Date: right-aligned, 13px regular (400), muted color, formatted as "10 May" or "DD MMM"
 - Card: `borderRadius: 16px`, card background (`#FFFCF7`), card border, card shadow
-- Card padding: 16px horizontal, 14px vertical
+- Card padding: 16px horizontal, 16px vertical
 - Cards stacked vertically with 8px gap between them
 
 ### Filter Bar (D-05, D-08)
 
-- "Filters ▼" / "Filters ▲" toggle button: 13px, medium weight, subBg fill, 8px padding, 8px border-radius
+- "Filters ▼" / "Filters ▲" toggle button: 13px, regular weight (400), subBg fill, 8px padding, 8px border-radius
 - When open: filter inputs appear in a card panel below the toggle, 16px padding, subBg background
 - Filter fields: Date From, Date To (type="date"), Category (select dropdown), Amount Min, Amount Max (type="number" step="0.01")
-- Apply button: accent fill, white text, 600 weight, 14px, 10px×18px padding, 12px border-radius
-- Filters do NOT auto-apply — only on Apply button click (D-08)
+- Apply button: accent fill, white text, 700 weight, 14px, 8px×16px padding, 12px border-radius
 
 ### Pagination (D-06, D-07)
 
 - Three elements in a horizontal row: [← Prev] [Page 2 of 8] [Next →]
-- Prev/Next: secondary style (subBg fill, ink text, 600 weight), 44px min-height touch target, 12px border-radius
-- Page indicator: 13px, muted color, medium weight
+- Prev/Next: secondary style (subBg fill, ink text, 700 weight), 48px min-height touch target, 12px border-radius
+- Page indicator: 13px, muted color, regular weight (400)
 - Prev disabled (page 1): opacity 0.4, cursor not-allowed
 - Next disabled (last page): opacity 0.4, cursor not-allowed
 - Fixed 10 items per page — no page-size control (D-07)
@@ -177,7 +180,7 @@ All components implemented as React functional components with inline styles. No
 
 - Validation fires on submit, not on change
 - Single consolidated error message displayed inline below the submit button
-- Error message: 14px, destructive color (`#C0392B`), regular weight
+- Error message: 14px, destructive color (`#C0392B`), regular weight (400)
 - Error clears when user begins correcting fields (or on next submit attempt)
 - Required fields: amount (> 0, max 2 decimals), category (must be selected), date (required)
 - Optional field: description (text, no length limit enforced in UI beyond backend 255 char)
@@ -185,7 +188,7 @@ All components implemented as React functional components with inline styles. No
 ### Delete Confirmation (D-11)
 
 - Initial state: "Delete Expense" button (destructive color fill or destructive color text on subBg)
-- After clicking: button replaced inline with "Confirm Delete" (destructive fill) + "Cancel" (subBg fill) side by side
+- After clicking: button replaced inline with "Confirm Delete" (destructive fill) + "Keep Expense" (subBg fill) side by side
 - No modal, no `window.confirm()` — pure boolean state toggle (`showDeleteConfirm`)
 - Confirmed: API call fires, on success redirect to `/expenses`
 - Cancelled: returns to initial Delete button state
@@ -207,7 +210,7 @@ All components implemented as React functional components with inline styles. No
 
 - Format: "฿ 250.00" — ฿ symbol + space + number formatted to 2 decimal places
 - Amount input on form: `<input type="number" step="0.01" min="0.01">` with ฿ symbol displayed as adjacent text, not inside the input
-- Amount is prominent (Display size: 36px, weight 800) on the form, normal size (15px semibold) on list cards, large (22–28px, weight 700) on detail page
+- Amount is prominent (Display size: 36px, weight 700) on the form, normal size (15px bold 700) on list cards, large (22px, weight 700) on detail page
 
 ### Category Dropdown on Form
 
@@ -236,7 +239,7 @@ All components implemented as React functional components with inline styles. No
 | Empty state heading (no expenses ever) | "No expenses yet" |
 | Empty state body (no expenses ever) | "Start tracking your spending — add your first expense." |
 | Empty state CTA | "Add Expense" (links to `/expenses/new`) |
-| Empty state heading (filters return nothing) | "No results" |
+| Empty state heading (filters return nothing) | "No matching expenses" |
 | Empty state body (filters return nothing) | "No expenses match your filters. Try adjusting the date range or category." |
 | Pagination indicator | "Page {X} of {Y}" |
 | Pagination prev button | "← Prev" |
@@ -248,7 +251,7 @@ All components implemented as React functional components with inline styles. No
 | Delete button (initial) | "Delete Expense" |
 | Delete confirm prompt | "Are you sure?" (inline text above buttons) |
 | Delete confirm button | "Confirm Delete" |
-| Delete cancel button | "Cancel" |
+| Delete cancel button | "Keep Expense" |
 | Form validation error (amount zero) | "Amount must be greater than 0." |
 | Form validation error (amount format) | "Amount can have at most 2 decimal places." |
 | Form validation error (no category) | "Please select a category." |
