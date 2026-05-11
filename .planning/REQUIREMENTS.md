@@ -31,10 +31,10 @@
 
 ### Analytics & Reports
 
-- [ ] **REP-01**: User can view monthly total expense summary (total + by category)
-- [ ] **REP-02**: User can view expense breakdown by category (pie chart data)
-- [ ] **REP-03**: User can filter expenses by custom date range for trend view
-- [ ] **REP-04**: User can view daily and monthly average expense calculations
+- [x] **REP-01**: User can view monthly total expense summary (total + by category)
+- [x] **REP-02**: User can view expense breakdown by category (pie chart data)
+- [x] **REP-03**: User can filter expenses by custom date range for trend view
+- [x] **REP-04**: User can view daily and monthly average expense calculations
 
 ## v2 Requirements
 
@@ -91,10 +91,10 @@ Updated during roadmap creation.
 | CAT-03 | Phase 3 | Pending |
 | CAT-04 | Phase 3 | Pending |
 | CAT-05 | Phase 3 | Pending |
-| REP-01 | Phase 5 | Pending |
-| REP-02 | Phase 5 | Pending |
-| REP-03 | Phase 5 | Pending |
-| REP-04 | Phase 5 | Pending |
+| REP-01 | Phase 5 | Complete |
+| REP-02 | Phase 5 | Complete |
+| REP-03 | Phase 5 | Complete |
+| REP-04 | Phase 5 | Complete |
 
 **Coverage:**
 - v1 requirements: 19 total

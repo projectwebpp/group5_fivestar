@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 2: Authentication** - Users can register, log in, log out; all protected routes require valid JWT
 - [ ] **Phase 3: Categories** - Users can view predefined categories and manage custom ones
 - [x] **Phase 4: Expense Management** - Users can add, view, filter, edit, and delete expenses end-to-end (completed 2026-05-10)
-- [ ] **Phase 5: Analytics & Reports** - Users can see monthly summaries, category breakdowns, and averages
+- [x] **Phase 5: Analytics & Reports** - Users can see monthly summaries, category breakdowns, and averages (completed 2026-05-11)
 
 ## Phase Details
 
@@ -108,8 +108,8 @@ Plans:
 **Plans**: 2 (Wave 1: 05-01 Analytics API | Wave 2: 05-02 Analytics UI)
 
 Plans:
-- [ ] 05-01-PLAN.md — Analytics API: AnalyticsController@summary (aggregate query, user_id scope, averages, percentage), route in auth:api group
-- [ ] 05-02-PLAN.md — Analytics UI: recharts install, types/analytics.ts, api/analytics.ts, full AnalyticsPage (filter bar + preset buttons + summary cards + pie chart)
+- [x] 05-01-PLAN.md — Analytics API: AnalyticsController@summary (aggregate query, user_id scope, averages, percentage), route in auth:api group
+- [x] 05-02-PLAN.md — Analytics UI: recharts install, types/analytics.ts, api/analytics.ts, full AnalyticsPage (filter bar + preset buttons + summary cards + pie chart)
 **UI hint**: yes
 
 ## Progress
@@ -123,4 +123,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Authentication | 0/2 | Not started | - |
 | 3. Categories | 0/2 | Not started | - |
 | 4. Expense Management | 3/3 | Complete    | 2026-05-10 |
-| 5. Analytics & Reports | 0/2 | Ready to execute | - |
+| 5. Analytics & Reports | 2/2 | Complete         | 2026-05-11 |
