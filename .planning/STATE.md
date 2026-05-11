@@ -84,6 +84,7 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-05-11T19:25:00+07:00
-Stopped at: v1.0 complete — Phase 5 UAT approved, all phases done
+Last session: 2026-05-11T19:30:00+07:00
+Stopped at: v1.0 shipped — PR #3 created, all phases done
 Resume file: n/a — project complete
+pr: https://github.com/projectwebpp/group5_fivestar/pull/3
