@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\AnalyticsController;
 use App\Http\Controllers\Api\ExpenseController;
 use App\Http\Controllers\Api\HealthController;
 use Illuminate\Support\Facades\Route;
@@ -36,4 +37,7 @@ Route::middleware('auth:api')->group(function () {
     Route::put   ('expenses/{id}',   [ExpenseController::class, 'update']);
     Route::patch ('expenses/{id}',   [ExpenseController::class, 'update']);
     Route::delete('expenses/{id}',   [ExpenseController::class, 'destroy']);
+
+    // Phase 5: Analytics (REP-01 through REP-04)
+    Route::get('analytics/summary', [AnalyticsController::class, 'summary']);
 });
