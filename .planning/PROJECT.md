@@ -2,40 +2,43 @@
 
 ## What This Is
 
-A web app for individual users to log expenses, categorize spending, and visualize monthly financial status. Built as a group project with a full REST API backend (Laravel) and React frontend, deployed on Vercel. Designed to eliminate manual calculation errors and give users real-time monthly financial insight.
+A web app for individual users to log expenses, categorize spending, and visualize monthly financial status. Built as a group project with a full REST API backend (Laravel) and React TypeScript frontend, deployed on Vercel. **v1.0 shipped 2026-05-11.**
 
 ## Core Value
 
 Users can accurately log and view their monthly expenses by category — everything else is enhancement.
 
+## Current State (v1.0)
+
+- **Backend:** Laravel 10, PHP 8.3, MySQL, tymon/jwt-auth, custom response envelope macro
+- **Frontend:** React 18, TypeScript, Vite, React Router, Recharts
+- **Auth:** JWT (register/login/logout), token in localStorage, ProtectedRoute guard
+- **LOC:** ~5,532 (PHP + TS/TSX)
+- **Deploy:** Vercel
+
 ## Requirements
 
-### Validated
+### Validated (v1.0)
 
-(None yet — ship to validate)
+- ✓ User can register, log in, log out — v1.0
+- ✓ All endpoints require valid JWT — v1.0
+- ✓ User can add an expense (amount, currency, category, description, date) — v1.0
+- ✓ User can view all expenses with pagination — v1.0
+- ✓ User can filter expenses by date range, category, and amount range — v1.0
+- ✓ User can view, edit, and delete expenses — v1.0
+- ✓ System provides predefined default categories — v1.0
+- ✓ User can create, edit, and delete custom categories (with referential guard) — v1.0
+- ✓ User can view monthly total expense summary with category breakdown — v1.0
+- ✓ User can view pie chart of expenses by category — v1.0
+- ✓ User can filter by date range for trend view — v1.0
+- ✓ User can see daily and monthly average expense calculations — v1.0
 
-### Active
+### Active (v2.0 candidates)
 
-**Must Have — expense core:**
-- [ ] User can add an expense (amount, description, category, date)
-- [ ] User can view all expenses with pagination
-- [ ] User can delete an expense
-- [ ] User can assign an expense to a category
-- [ ] User can view monthly total expenses
-
-**Must Have — categories:**
-- [ ] User can view predefined expense categories
-- [ ] User can create custom categories (name, icon, color)
-- [ ] User can edit and delete categories
-
-**Must Have — date:**
-- [ ] System stores expense dates in ISO format (YYYY-MM-DD)
-- [ ] Monthly summaries are date-consistent
-
-**Should Have — analytics:**
-- [ ] User can view pie chart of expenses by category
-- [ ] User can filter expenses by date range
-- [ ] User can see daily and monthly average expense calculations
+- [ ] User can set a monthly budget limit per category
+- [ ] User can view current spend vs budget limit
+- [ ] User can download expense data as CSV
+- [ ] User can create recurring expense entries
 
 ### Out of Scope
 
@@ -46,51 +49,33 @@ Users can accurately log and view their monthly expenses by category — everyth
 - AI receipt scanning (OCR) — explicit Won't Have
 - Cross-bank sync — explicit Won't Have
 
-## Context
-
-- Group project (group5_fivestar), built for a course/assignment
-- Full SPEC.md exists with API design, data models, edge cases, and MoSCoW priorities
-- UI design mockups already exist as JSX files in root (add-screen.jsx, stats-screen.jsx, etc.)
-- API envelope standard: `{success, data, message}` on success; `{success: false, message, errors: [{field, message}]}` on failure
-- All responses support pagination; filters by date range, category, currency
-- DB schema: expenses, categories, budgets, recurring_expenses tables
-
 ## Constraints
 
-- **Tech Stack**: React (TypeScript) frontend — locked by team decision
-- **Tech Stack**: Laravel (PHP) backend — locked by team decision
-- **Tech Stack**: MySQL database — locked (Tech Stack section overrides SQLite MVP suggestion in SPEC.md)
-- **Auth**: JWT — locked by team decision
-- **Deploy**: Vercel — locked by team decision
-- **API Design**: REST with standard envelope — locked per SPEC.md
-- **Validation**: amount > 0, max 2 decimal places; dates ISO YYYY-MM-DD; currency codes validated
+- **Tech Stack**: React (TypeScript) frontend + Laravel (PHP) backend — locked by team decision
+- **Database**: MySQL only — no SQLite
+- **Auth**: JWT (tymon/jwt-auth) — team decision
+- **Deploy**: Vercel
+- **API envelope**: `{success, data, message}` on success — enforced via response()->success() macro
+- **Dates**: ISO format (YYYY-MM-DD) throughout
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| MySQL over SQLite | SPEC.md Tech Stack section declares MySQL; overrides MVP SQLite suggestion | — Pending |
-| JWT auth | Team decision per SPEC.md | — Pending |
-| Vercel deploy | SPEC.md deploy target; non-HEAD side of merge conflict retained | — Pending |
-| `{success, data, message}` response envelope | SPEC.md API standard; consistent error/success shape | — Pending |
-| Budget/CSV/Recurring deferred to v2 | MoSCoW "Could Have" — not blocking core product | — Pending |
+| MySQL not SQLite | Team tech stack | ✓ Good — no issues |
+| JWT auth (tymon/jwt-auth) | Team decision | ✓ Good |
+| Response envelope macro | Consistent API contract | ✓ Good |
+| Server-side % pre-computation | No client rounding errors | ✓ Good |
+| Recharts for pie chart | Native React, built-in Tooltip | ✓ Good |
+| Single analytics endpoint | Trend = filtered snapshot | ✓ Good |
+| Budget/CSV/Recurring → v2 | MoSCoW scope control | ✓ Good |
 
-## Evolution
+## Context
 
-This document evolves at phase transitions and milestone boundaries.
-
-**After each phase transition** (via `/gsd-transition`):
-1. Requirements invalidated? → Move to Out of Scope with reason
-2. Requirements validated? → Move to Validated with phase reference
-3. New requirements emerged? → Add to Active
-4. Decisions to log? → Add to Key Decisions
-5. "What This Is" still accurate? → Update if drifted
-
-**After each milestone** (via `/gsd-complete-milestone`):
-1. Full review of all sections
-2. Core Value check — still the right priority?
-3. Audit Out of Scope — reasons still valid?
-4. Update Context with current state
+- Group project (group5_fivestar), built for a course/assignment
+- All v1 work done on `main` branch directly
+- PR #3 merged 2026-05-11T12:39:50Z
+- Tagged: v1.0
 
 ---
-*Last updated: 2026-05-09 after initialization*
+*Last updated: 2026-05-11 after v1.0 milestone*

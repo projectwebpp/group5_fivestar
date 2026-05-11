@@ -80,7 +80,10 @@ Items acknowledged and carried forward from previous milestone close:
 
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
-| *(none)* | | | |
+| uat_gap | Phase 03 — 03-HUMAN-UAT.md (0 pending, status: resolved) | Acknowledged | 2026-05-11 |
+| uat_gap | Phase 04 — 04-HUMAN-UAT.md (5 pending scenarios) | Acknowledged | 2026-05-11 |
+| verification_gap | Phase 03 — 03-VERIFICATION.md (human_needed) | Acknowledged | 2026-05-11 |
+| verification_gap | Phase 04 — 04-VERIFICATION.md (human_needed) | Acknowledged | 2026-05-11 |
 
 ## Session Continuity
 
