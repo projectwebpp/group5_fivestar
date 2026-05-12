@@ -1,0 +1,48 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-05-12T19:06:29+07:00",
+  "phase": "06",
+  "phase_name": "budget-management",
+  "phase_dir": ".planning/phases/06-budget-management",
+  "plan": 3,
+  "task": 1,
+  "total_tasks": 2,
+  "status": "paused",
+  "completed_tasks": [
+    {"id": "06-01-T1", "name": "Budget migration + model", "status": "done", "commit": "d0b4368"},
+    {"id": "06-01-T2", "name": "BudgetController CRUD", "status": "done", "commit": "1712bd9"},
+    {"id": "06-01-T3", "name": "Register budget routes", "status": "done", "commit": "5349928"},
+    {"id": "06-02-T1", "name": "TypeScript budget types", "status": "done", "commit": "add72a6"},
+    {"id": "06-02-T2", "name": "Budget API client functions", "status": "done", "commit": "6d63b65"}
+  ],
+  "remaining_tasks": [
+    {"id": "06-03-T1", "name": "BudgetPage.tsx component", "status": "not_started"},
+    {"id": "06-03-T2", "name": "App.tsx routing update", "status": "not_started"}
+  ],
+  "blockers": [
+    {
+      "description": "Stale locked worktree at .claude/worktrees/agent-a4bd63a0f0bd85c56 (branch worktree-agent-a4bd63a0f0bd85c56) from failed 06-03 agent",
+      "type": "technical",
+      "workaround": "git worktree unlock + remove --force + git branch -D before re-executing"
+    },
+    {
+      "description": "User permission settings deny Bash in worktree-isolated subagents — HEAD assertion fails immediately",
+      "type": "technical",
+      "workaround": "Spawn 06-03 executor WITHOUT isolation='worktree' (sequential mode on main working tree)"
+    }
+  ],
+  "human_actions_pending": [
+    {
+      "action": "Run php artisan migrate on Railway MySQL database",
+      "context": "budgets table migration created but not applied to remote DB",
+      "blocking": false
+    }
+  ],
+  "decisions": [
+    {"decision": "Use sequential executor mode (no worktree isolation) for remaining Phase 6 plans", "rationale": "User Bash permissions block HEAD assertion required by worktree mode", "phase": "06"},
+    {"decision": "Wave 1 merged via no-ff merge commit", "rationale": "Standard worktree merge protocol", "phase": "06"}
+  ],
+  "uncommitted_files": [],
+  "next_action": "1. Clean stale worktree (see .continue-here.md). 2. Execute 06-03 in sequential mode. 3. Code review + verify phase.",
+  "context_notes": "Wave 1 complete and on main. Only BudgetPage UI + routing remain. Simple fix: sequential mode for 06-03."
+}
