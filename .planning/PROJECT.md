@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A web app for individual users to log expenses, categorize spending, and visualize monthly financial status. Built as a group project with a full REST API backend (Laravel) and React TypeScript frontend, deployed on Vercel. **v1.0 shipped 2026-05-11.**
+A web app for individual users to log expenses, categorize spending, visualize monthly financial status, and manage budgets. Built as a group project with a full REST API backend (Laravel) and React TypeScript frontend, deployed on Vercel. **v1.0 shipped 2026-05-11. v2.0 in progress.**
 
 ## Core Value
 
@@ -33,19 +33,17 @@ Users can accurately log and view their monthly expenses by category — everyth
 - ✓ User can filter by date range for trend view — v1.0
 - ✓ User can see daily and monthly average expense calculations — v1.0
 
-### Active (v2.0 candidates)
+### Active (v2.0)
 
-- [ ] User can set a monthly budget limit per category
-- [ ] User can view current spend vs budget limit
-- [ ] User can download expense data as CSV
-- [ ] User can create recurring expense entries
+- [ ] REQ-20: User can set a monthly budget limit per category
+- [ ] REQ-21: User can view current spend vs budget limit per category
+- [ ] REQ-22: System displays over-budget warnings when spend exceeds limit
+- [ ] REQ-23: User can download expense data as CSV
+- [ ] REQ-24: User can create recurring expense entries
 
 ### Out of Scope
 
-- Budget management with alerts — MoSCoW "Could Have", deferred to v2
-- CSV export — MoSCoW "Could Have", deferred to v2
-- Recurring expenses — MoSCoW "Could Have", deferred to v2
-- Multi-currency support — not in MoSCoW Must/Should, deferred to v2
+- Multi-currency support — deferred beyond v2
 - AI receipt scanning (OCR) — explicit Won't Have
 - Cross-bank sync — explicit Won't Have
 
@@ -77,5 +75,11 @@ Users can accurately log and view their monthly expenses by category — everyth
 - PR #3 merged 2026-05-11T12:39:50Z
 - Tagged: v1.0
 
+## v2.0 Milestone
+
+**Goal:** Add budget management, CSV export, and recurring expenses
+**Status:** Planning — requirements confirmed 2026-05-12
+**Phases:** 6+ (continues from v1.0)
+
 ---
-*Last updated: 2026-05-11 after v1.0 milestone*
+*Last updated: 2026-05-12 — v2.0 milestone initiated*

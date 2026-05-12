@@ -3,6 +3,7 @@
 ## Milestones
 
 - ✅ **v1.0 MVP** — Phases 1–5 (shipped 2026-05-11) — [archive](.planning/milestones/v1.0-ROADMAP.md)
+- 🔄 **v2.0 Budget & Export** — Phases 6–8 (planning 2026-05-12)
 
 ## Phases
 
@@ -28,3 +29,6 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 | 3. Categories | v1.0 | 2/2 | Complete | 2026-05-10 |
 | 4. Expense Management | v1.0 | 3/3 | Complete | 2026-05-10 |
 | 5. Analytics & Reports | v1.0 | 2/2 | Complete | 2026-05-11 |
+| 6. Budget Management | v2.0 | 0/? | Planning | — |
+| 7. CSV Export | v2.0 | 0/? | Planning | — |
+| 8. Recurring Expenses | v2.0 | 0/? | Planning | — |

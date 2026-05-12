@@ -26,3 +26,18 @@ Full expense tracker — users can register, authenticate via JWT, manage catego
 ### Archive
 - `.planning/milestones/v1.0-ROADMAP.md`
 - `.planning/milestones/v1.0-REQUIREMENTS.md`
+
+---
+
+## v2.0 — Budget & Export Features
+
+**Status:** Planning (initiated 2026-05-12)
+**Phases:** 6–8 (3 phases planned)
+**Requirements:** REQ-20 through REQ-24
+
+### Scope
+
+Budget management (per-category monthly limits, spend vs budget view, over-budget warnings), CSV export, and recurring expenses.
+
+### Archive
+- `.planning/milestones/v2.0-REQUIREMENTS.md`
