@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BudgetController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\AnalyticsController;
 use App\Http\Controllers\Api\ExpenseController;
@@ -40,4 +41,10 @@ Route::middleware('auth:api')->group(function () {
 
     // Phase 5: Analytics (REP-01 through REP-04)
     Route::get('analytics/summary', [AnalyticsController::class, 'summary']);
+
+    // Phase 6: Budget Management (REQ-20, REQ-21, REQ-22)
+    Route::get   ('budgets',      [BudgetController::class, 'index']);
+    Route::post  ('budgets',      [BudgetController::class, 'store']);
+    Route::put   ('budgets/{id}', [BudgetController::class, 'update']);
+    Route::delete('budgets/{id}', [BudgetController::class, 'destroy']);
 });
