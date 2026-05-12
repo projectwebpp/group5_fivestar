@@ -20,6 +20,19 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 </details>
 
+### Phase 6: Budget Management (v2.0)
+
+**Goal:** Users can set monthly budget limits per category, view spend vs limit on a dedicated /budget page, and see red-row warnings when over budget.
+
+**Requirements:** REQ-20, REQ-21, REQ-22
+
+**Plans:** 3 plans
+
+Plans:
+- [ ] 06-01-PLAN.md — Backend: migration, Budget model, BudgetController (GET/POST/PUT/DELETE), routes
+- [ ] 06-02-PLAN.md — Frontend types and API layer: types/budget.ts, api/budgets.ts
+- [ ] 06-03-PLAN.md — Frontend UI: BudgetPage.tsx with inline edit, over-budget warnings, App.tsx wiring
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -29,6 +42,6 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 | 3. Categories | v1.0 | 2/2 | Complete | 2026-05-10 |
 | 4. Expense Management | v1.0 | 3/3 | Complete | 2026-05-10 |
 | 5. Analytics & Reports | v1.0 | 2/2 | Complete | 2026-05-11 |
-| 6. Budget Management | v2.0 | 0/? | Planning | — |
+| 6. Budget Management | v2.0 | 0/3 | Ready | — |
 | 7. CSV Export | v2.0 | 0/? | Planning | — |
 | 8. Recurring Expenses | v2.0 | 0/? | Planning | — |
