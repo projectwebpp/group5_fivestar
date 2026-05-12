@@ -22,7 +22,15 @@
       "Bash(xxd /mnt/c/Users/copfo/Desktop/group5_fivestar/frontend/.env)",
       "Bash(npm run *)",
       "Bash(kill -9 7137)",
-      "Bash(git *)"
+      "Bash(git *)",
+      "Bash(echo \"Backend PID: $!\")",
+      "Bash(echo \"Frontend PID: $!\")",
+      "Bash(composer install *)",
+      "Bash(php --version)",
+      "Bash(php composer.phar install)",
+      "Bash(lsof *)",
+      "Bash(kill 2099)",
+      "Bash(kill 2666 2693)"
     ],
     "defaultMode": "acceptEdits"
   }
