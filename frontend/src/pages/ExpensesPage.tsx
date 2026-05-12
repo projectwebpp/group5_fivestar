@@ -46,20 +46,27 @@ export default function ExpensesPage() {
     <div style={{ fontFamily: 'sans-serif', minHeight: '100vh', background: '#F4EFE6', padding: '24px', paddingBottom: 48 }}>
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
         <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1F1B16', margin: 0 }}>Expenses</h1>
-        <Link
-          to="/expenses/new"
-          style={{
-            padding: '8px 16px',
-            background: 'oklch(48% 0.10 195)',
-            color: '#fff',
-            fontWeight: 700,
-            fontSize: 14,
-            borderRadius: 12,
-            textDecoration: 'none',
-          }}
-        >
-          Add Expense
-        </Link>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          <nav style={{ display: 'flex', gap: 16 }}>
+            <Link to="/expenses"  style={{ fontSize: 15, fontWeight: 700, color: 'oklch(48% 0.10 195)', textDecoration: 'none' }}>Expenses</Link>
+            <Link to="/analytics" style={{ fontSize: 15, fontWeight: 700, color: '#7A7064',              textDecoration: 'none' }}>Analytics</Link>
+            <Link to="/budget"    style={{ fontSize: 15, fontWeight: 700, color: '#7A7064',              textDecoration: 'none' }}>Budget</Link>
+          </nav>
+          <Link
+            to="/expenses/new"
+            style={{
+              padding: '8px 16px',
+              background: 'oklch(48% 0.10 195)',
+              color: '#fff',
+              fontWeight: 700,
+              fontSize: 14,
+              borderRadius: 12,
+              textDecoration: 'none',
+            }}
+          >
+            Add Expense
+          </Link>
+        </div>
       </header>
 
       <FilterBar

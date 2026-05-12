@@ -280,6 +280,9 @@ export default function AnalyticsPage() {
           <Link to="/analytics" style={{ fontSize: 15, fontWeight: 700, color: 'oklch(48% 0.10 195)', textDecoration: 'none' }}>
             Analytics
           </Link>
+          <Link to="/budget" style={{ fontSize: 15, fontWeight: 700, color: '#7A7064', textDecoration: 'none' }}>
+            Budget
+          </Link>
         </nav>
       </header>
 
