@@ -42,7 +42,7 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 07-01-PLAN.md — Backend: export() method in ExpenseController, GET /api/expenses/export route
+- [x] 07-01-PLAN.md — Backend: export() method in ExpenseController, GET /api/expenses/export route
 - [ ] 07-02-PLAN.md — Frontend: exportExpenses() API function, Export CSV button and state on ExpensesPage
 
 ## Progress
@@ -55,5 +55,5 @@ Plans:
 | 4. Expense Management | v1.0 | 3/3 | Complete | 2026-05-10 |
 | 5. Analytics & Reports | v1.0 | 2/2 | Complete | 2026-05-11 |
 | 6. Budget Management | v2.0 | 3/3 | Complete | 2026-05-13 |
-| 7. CSV Export | v2.0 | 0/2 | Planning | — |
+| 7. CSV Export | v2.0 | 1/2 | In Progress | — |
 | 8. Recurring Expenses | v2.0 | 0/? | Planning | — |
