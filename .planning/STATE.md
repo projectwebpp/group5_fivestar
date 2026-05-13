@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Budget & Export Features
 status: in-progress
-stopped_at: Phase 07 plan 01 complete — ready to execute 07-02
-last_updated: "2026-05-13T21:47:00+07:00"
-last_activity: 2026-05-13 — Phase 07 plan 01 (CSV Export backend) executed
+stopped_at: Phase 07 plan 02 complete — Phase 7 CSV Export fully complete
+last_updated: "2026-05-13T22:02:00+07:00"
+last_activity: 2026-05-13 — Phase 07 plan 02 (CSV Export frontend) executed
 progress:
   total_phases: 3
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 3
   completed_plans: 3
-  percent: 33
+  percent: 67
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-05-12)
 ## Current Position
 
 Phase: 07 of 8 — CSV Export
-Plan: 1 of 2 — Backend complete
-Status: Plan 01 complete — ready for 07-02
+Plan: 2 of 2 — Phase complete
+Status: Phase 07 complete — ready for Phase 08
 Last activity: 2026-05-13
 
-Progress: [████░░░░░░] 38%
+Progress: [███████░░░] 67%
 
 ## Accumulated Context
 
@@ -45,6 +45,8 @@ Progress: [████░░░░░░] 38%
 - CSV export uses response()->streamDownload() — sole exception to response()->success() JSON envelope
 - GET /api/expenses/export registered before expenses/{id} — prevents "export" from matching as an ID
 - Export always returns all user expenses regardless of active filters (D-03)
+- exportLoading state is independent of page loading state — Export CSV button never gated on !loading (avoids UX anti-pattern)
+- Blob download: apiClient.get responseType:'blob' → createObjectURL → anchor click → revokeObjectURL (memory safe pattern)
 
 ### Pending Todos
 
@@ -57,6 +59,6 @@ Progress: [████░░░░░░] 38%
 
 ## Session Continuity
 
-Last session: 2026-05-13T21:47:00+07:00
-Stopped at: Phase 07 plan 01 complete — run /gsd-execute-phase 7 for plan 02 next
-Resume file: .planning/phases/07-csv-export/07-01-SUMMARY.md
+Last session: 2026-05-13T22:02:00+07:00
+Stopped at: Phase 07 plan 02 complete — Phase 7 CSV Export done; run /gsd-execute-phase 8 for Phase 08
+Resume file: .planning/phases/07-csv-export/07-02-SUMMARY.md
