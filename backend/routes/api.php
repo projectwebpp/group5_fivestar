@@ -32,9 +32,11 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('categories/{category}', [CategoryController::class, 'destroy']);
 
     // Phase 4: Expenses (EXP-01 through EXP-06)
-    Route::get   ('expenses',        [ExpenseController::class, 'index']);
-    Route::post  ('expenses',        [ExpenseController::class, 'store']);
-    Route::get   ('expenses/{id}',   [ExpenseController::class, 'show']);
+    Route::get   ('expenses',          [ExpenseController::class, 'index']);
+    Route::post  ('expenses',          [ExpenseController::class, 'store']);
+    // Phase 7: CSV Export (REQ-23) — MUST be before expenses/{id}
+    Route::get   ('expenses/export',   [ExpenseController::class, 'export']);
+    Route::get   ('expenses/{id}',     [ExpenseController::class, 'show']);
     Route::put   ('expenses/{id}',   [ExpenseController::class, 'update']);
     Route::patch ('expenses/{id}',   [ExpenseController::class, 'update']);
     Route::delete('expenses/{id}',   [ExpenseController::class, 'destroy']);
