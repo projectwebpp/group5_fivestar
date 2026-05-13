@@ -33,6 +33,18 @@ Plans:
 - [x] 06-02-PLAN.md — Frontend types and API layer: types/budget.ts, api/budgets.ts
 - [x] 06-03-PLAN.md — Frontend UI: BudgetPage.tsx with inline edit, over-budget warnings, App.tsx wiring
 
+### 🔄 Phase 7: CSV Export (v2.0)
+
+**Goal:** Users can download all their expense data as a CSV file from the Expenses page header.
+
+**Requirements:** REQ-23
+
+**Plans:** 2 plans
+
+Plans:
+- [ ] 07-01-PLAN.md — Backend: export() method in ExpenseController, GET /api/expenses/export route
+- [ ] 07-02-PLAN.md — Frontend: exportExpenses() API function, Export CSV button and state on ExpensesPage
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -43,5 +55,5 @@ Plans:
 | 4. Expense Management | v1.0 | 3/3 | Complete | 2026-05-10 |
 | 5. Analytics & Reports | v1.0 | 2/2 | Complete | 2026-05-11 |
 | 6. Budget Management | v2.0 | 3/3 | Complete | 2026-05-13 |
-| 7. CSV Export | v2.0 | 0/? | Planning | — |
+| 7. CSV Export | v2.0 | 0/2 | Planning | — |
 | 8. Recurring Expenses | v2.0 | 0/? | Planning | — |
