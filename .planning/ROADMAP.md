@@ -45,6 +45,19 @@ Plans:
 - [x] 07-01-PLAN.md — Backend: export() method in ExpenseController, GET /api/expenses/export route
 - [x] 07-02-PLAN.md — Frontend: exportExpenses() API function, Export CSV button and state on ExpensesPage
 
+### 🔄 Phase 8: Recurring Expenses (v2.0) — in progress
+
+**Goal:** Users can create recurring expense templates (daily/weekly/monthly), view and manage them on a dedicated /recurring page, and have entries auto-created when they load the Expenses page.
+
+**Requirements:** REQ-24
+
+**Plans:** 3 plans
+
+Plans:
+- [ ] 08-01-PLAN.md — Backend: migration, RecurringExpense model, RecurringExpenseController (CRUD), processRecurring() in ExpenseController, routes, feature tests
+- [ ] 08-02-PLAN.md — Frontend types and API layer: types/recurring.ts, api/recurring.ts
+- [ ] 08-03-PLAN.md — Frontend UI: RecurringPage.tsx with inline form/edit/delete, App.tsx wiring, Recurring nav link on all pages
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -56,4 +69,4 @@ Plans:
 | 5. Analytics & Reports | v1.0 | 2/2 | Complete | 2026-05-11 |
 | 6. Budget Management | v2.0 | 3/3 | Complete | 2026-05-13 |
 | 7. CSV Export | v2.0 | 2/2 | Complete | 2026-05-13 |
-| 8. Recurring Expenses | v2.0 | 0/? | Planning | — |
+| 8. Recurring Expenses | v2.0 | 0/3 | Planning | — |
