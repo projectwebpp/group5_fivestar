@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { listExpenses } from '../api/expenses';
+import { listExpenses, exportExpenses } from '../api/expenses';
 import { listCategories } from '../api/categories';
 import type { Category } from '../api/categories';
 import type { Expense, ExpenseFilters, ExpenseListMeta } from '../types/expense';
@@ -8,6 +8,7 @@ import ExpenseCard from '../components/ExpenseCard';
 import FilterBar from '../components/FilterBar';
 import Pagination from '../components/Pagination';
 import EmptyState from '../components/EmptyState';
+import InlineError from '../components/InlineError';
 
 export default function ExpensesPage() {
   const [items, setItems] = useState<Expense[]>([]);
@@ -18,6 +19,8 @@ export default function ExpensesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [exportLoading, setExportLoading] = useState(false);
+  const [exportError,   setExportError]   = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,6 +45,18 @@ export default function ExpensesPage() {
     appliedFilters.amount_max
   );
 
+  const handleExport = async () => {
+    setExportLoading(true);
+    setExportError(null);
+    try {
+      await exportExpenses();
+    } catch {
+      setExportError('Export failed. Please try again.');
+    } finally {
+      setExportLoading(false);
+    }
+  };
+
   return (
     <div style={{ fontFamily: 'sans-serif', minHeight: '100vh', background: '#F4EFE6', padding: '24px', paddingBottom: 48 }}>
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
@@ -52,6 +67,23 @@ export default function ExpensesPage() {
             <Link to="/analytics" style={{ fontSize: 15, fontWeight: 700, color: '#7A7064',              textDecoration: 'none' }}>Analytics</Link>
             <Link to="/budget"    style={{ fontSize: 15, fontWeight: 700, color: '#7A7064',              textDecoration: 'none' }}>Budget</Link>
           </nav>
+          <button
+            onClick={handleExport}
+            disabled={exportLoading}
+            style={{
+              padding: '8px 16px',
+              background: 'transparent',
+              color: 'oklch(48% 0.10 195)',
+              fontWeight: 600,
+              fontSize: 14,
+              borderRadius: 12,
+              border: '1.5px solid oklch(48% 0.10 195)',
+              cursor: exportLoading ? 'not-allowed' : 'pointer',
+              opacity: exportLoading ? 0.6 : 1,
+            }}
+          >
+            {exportLoading ? 'Exporting...' : 'Export CSV'}
+          </button>
           <Link
             to="/expenses/new"
             style={{
@@ -68,6 +100,7 @@ export default function ExpensesPage() {
           </Link>
         </div>
       </header>
+      <InlineError message={exportError} />
 
       <FilterBar
         open={filtersOpen}
