@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Budget & Export Features
-status: executing
-stopped_at: Phase 06 all plans executed — awaiting human UAT approval
-last_updated: "2026-05-12T20:40:00+07:00"
-last_activity: 2026-05-12 — Phase 06 (Budget Management) all 3 plans executed, code review done, verification human_needed
+status: planning
+stopped_at: Phase 06 complete — advancing to Phase 07 (CSV Export)
+last_updated: "2026-05-13T20:50:00+07:00"
+last_activity: 2026-05-13 — Phase 06 (Budget Management) human UAT approved, phase closed
 progress:
-  total_phases: 1
-  completed_phases: 0
+  total_phases: 3
+  completed_phases: 1
   total_plans: 3
   completed_plans: 3
-  percent: 80
+  percent: 33
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-12)
 
 **Core value:** Users can accurately log and view their monthly expenses by category — and manage budgets
-**Current focus:** Phase 06 — Budget Management (awaiting human UAT approval)
+**Current focus:** Phase 07 — CSV Export (not yet started)
 
 ## Current Position
 
-Phase: 06 of ? — Budget Management
-Plan: 3 of 3 — COMPLETE (all plans executed)
-Status: Awaiting human UAT — 3 items to test in browser, then approve
-Last activity: 2026-05-12
+Phase: 07 of 8 — CSV Export
+Plan: 0 of ? — Not yet planned
+Status: Ready to discuss/plan
+Last activity: 2026-05-13
 
-Progress: [████████░░] 80%
+Progress: [███░░░░░░░] 33%
 
 ## Accumulated Context
 
@@ -45,16 +45,15 @@ Progress: [████████░░] 80%
 
 ### Pending Todos
 
-None.
+- (optional) Fix CR-02/CR-04/WR-01 from Phase 06 code review before Phase 08 ship
 
 ### Blockers/Concerns
 
-- Human UAT pending (3 items — budget round-trip, over-budget warning, auth guard)
-- php artisan migrate not yet run on Railway MySQL (non-blocking)
-- Code review fixes recommended before ship: CR-02 (500 on duplicate), CR-04 (decimal validation), WR-01 (silent no-op)
+- php artisan migrate not yet run on Railway MySQL (non-blocking — budgets table)
+- Code review fixes deferred: CR-02 (500 on duplicate budget), CR-04 (decimal validation), WR-01 (silent no-op)
 
 ## Session Continuity
 
-Last session: 2026-05-12T20:40:00+07:00
-Stopped at: Phase 06 complete pending human UAT — say "approved" to close phase
-Resume file: .planning/phases/06-budget-management/.continue-here.md
+Last session: 2026-05-13T20:50:00+07:00
+Stopped at: Phase 06 closed, Phase 07 (CSV Export) ready to plan
+Resume file: none

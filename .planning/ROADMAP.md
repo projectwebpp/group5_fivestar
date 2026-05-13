@@ -3,7 +3,7 @@
 ## Milestones
 
 - ✅ **v1.0 MVP** — Phases 1–5 (shipped 2026-05-11) — [archive](.planning/milestones/v1.0-ROADMAP.md)
-- 🔄 **v2.0 Budget & Export** — Phases 6–8 (planning 2026-05-12)
+- 🔄 **v2.0 Budget & Export** — Phases 6–8 (in progress 2026-05-12)
 
 ## Phases
 
@@ -20,7 +20,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 </details>
 
-### Phase 6: Budget Management (v2.0)
+### ✅ Phase 6: Budget Management (v2.0) — completed 2026-05-13
 
 **Goal:** Users can set monthly budget limits per category, view spend vs limit on a dedicated /budget page, and see red-row warnings when over budget.
 
@@ -29,9 +29,9 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 **Plans:** 3 plans
 
 Plans:
-- [ ] 06-01-PLAN.md — Backend: migration, Budget model, BudgetController (GET/POST/PUT/DELETE), routes
-- [ ] 06-02-PLAN.md — Frontend types and API layer: types/budget.ts, api/budgets.ts
-- [ ] 06-03-PLAN.md — Frontend UI: BudgetPage.tsx with inline edit, over-budget warnings, App.tsx wiring
+- [x] 06-01-PLAN.md — Backend: migration, Budget model, BudgetController (GET/POST/PUT/DELETE), routes
+- [x] 06-02-PLAN.md — Frontend types and API layer: types/budget.ts, api/budgets.ts
+- [x] 06-03-PLAN.md — Frontend UI: BudgetPage.tsx with inline edit, over-budget warnings, App.tsx wiring
 
 ## Progress
 
@@ -42,6 +42,6 @@ Plans:
 | 3. Categories | v1.0 | 2/2 | Complete | 2026-05-10 |
 | 4. Expense Management | v1.0 | 3/3 | Complete | 2026-05-10 |
 | 5. Analytics & Reports | v1.0 | 2/2 | Complete | 2026-05-11 |
-| 6. Budget Management | v2.0 | 0/3 | Ready | — |
+| 6. Budget Management | v2.0 | 3/3 | Complete | 2026-05-13 |
 | 7. CSV Export | v2.0 | 0/? | Planning | — |
 | 8. Recurring Expenses | v2.0 | 0/? | Planning | — |
