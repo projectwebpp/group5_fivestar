@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-05-13T23:05:00+07:00",
+  "timestamp": "2026-05-13T16:28:25.000Z",
   "phase": "08",
   "phase_name": "recurring-expenses",
   "phase_dir": ".planning/phases/08-recurring-expenses",
@@ -8,29 +8,24 @@
   "task": 0,
   "total_tasks": 3,
   "status": "paused",
-  "completed_tasks": [
-    {"id": "07-execute", "name": "Execute Phase 07 — backend route + frontend button", "status": "done", "commit": "b814c51"},
-    {"id": "07-verify", "name": "Verify Phase 07 — 15/15 automated checks passed", "status": "done", "commit": "1d2f9fc"},
-    {"id": "07-close", "name": "Human UAT approved — Phase 07 closed", "status": "done", "commit": "77999ba"}
-  ],
+  "completed_tasks": [],
   "remaining_tasks": [
-    {"id": "08-discuss", "name": "Discuss Phase 08 context — /gsd-discuss-phase 8", "status": "not_started"},
-    {"id": "08-plan", "name": "Plan Phase 08 — /gsd-plan-phase 8", "status": "not_started"},
-    {"id": "08-execute", "name": "Execute Phase 08 — /gsd-execute-phase 8", "status": "not_started"}
+    {"id": 1, "name": "08-01: Backend — migration, RecurringExpense model, RecurringExpenseController, routes, processRecurring() in ExpenseController, tests", "status": "not_started"},
+    {"id": 2, "name": "08-02: Frontend types & API client — recurring.ts types + api/recurring.ts", "status": "not_started"},
+    {"id": 3, "name": "08-03: Frontend UI — RecurringPage.tsx, App.tsx routing, nav link, ExpensesPage/AnalyticsPage/BudgetPage nav sync", "status": "not_started"}
   ],
   "blockers": [],
   "human_actions_pending": [
-    {
-      "action": "Run php artisan migrate on Railway MySQL — budgets table from Phase 06 still not applied to remote DB",
-      "context": "Non-blocking for Phase 08 development but needed before shipping v2.0",
-      "blocking": false
-    }
+    {"action": "Run `php artisan migrate` on Railway MySQL after 08-01 is executed", "context": "recurring_expenses table migration will be created in 08-01; Railway MySQL requires manual migration run", "blocking": false}
   ],
   "decisions": [
-    {"decision": "Phase 08 is the final v2.0 phase — REQ-24 (recurring expenses)", "rationale": "REQ-20/21/22 done in Phase 6, REQ-23 done in Phase 7", "phase": "08"},
-    {"decision": "Sequential executor mode preferred (no worktree isolation)", "rationale": "Bash permissions block worktree HEAD assertion — established in Phase 6, confirmed in Phase 7", "phase": "08"}
+    {"decision": "Auto-creation on-request — processRecurring() called in ExpenseController::index() before fetching results", "rationale": "No background scheduler needed; works on Vercel Hobby plan", "phase": "08"},
+    {"decision": "One entry per template per trigger — avoids flooding expense list after long absence", "rationale": "User gets most recent missed period only, not full backfill", "phase": "08"},
+    {"decision": "Deduplication via last_created_date on recurring template", "rationale": "Simple, no extra table needed — create entry only if today > next_due(last_created_date + frequency)", "phase": "08"},
+    {"decision": "Three frequencies: daily, weekly, monthly (ENUM in DB)", "rationale": "Covers v2 scope; no end date — template active until deleted", "phase": "08"},
+    {"decision": "RecurringPage uses table layout + inline form (no separate route) — mirrors BudgetPage pattern", "rationale": "Consistent with Phase 6 established patterns (D-05/D-06)", "phase": "08"}
   ],
-  "uncommitted_files": [],
-  "next_action": "Run /gsd-discuss-phase 8 in a fresh context window to gather requirements and implementation decisions for recurring expenses before planning",
-  "context_notes": "Phase 07 (CSV Export) complete and human-approved. All v2.0 phases except Phase 08 are done. Phase 08 directory does not exist yet — discuss-phase will create it. REQ-24 scope: user can create recurring expense entries (frequency, interval, auto-creation). Tech stack unchanged. No Railway DB migration needed for Phase 08 (new table, not dependent on budgets)."
+  "uncommitted_files": [".planning/STATE.md"],
+  "next_action": "Execute Phase 8 with `/gsd-execute-phase 8` — all 3 plans are ready, start with 08-01 (Wave 1: backend)",
+  "context_notes": "Phase 8 plans are fully created and reviewed. No code has been written yet for this phase. The context in 08-CONTEXT.md is authoritative — read it before executing. BudgetPage.tsx is the primary UI reference. The processRecurring() hook goes in ExpenseController::index() at the very start. Migration filename: 2026_05_13_000001_create_recurring_expenses_table.php."
 }
