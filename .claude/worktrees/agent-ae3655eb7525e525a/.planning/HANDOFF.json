@@ -1,0 +1,36 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-05-13T23:05:00+07:00",
+  "phase": "08",
+  "phase_name": "recurring-expenses",
+  "phase_dir": ".planning/phases/08-recurring-expenses",
+  "plan": 0,
+  "task": 0,
+  "total_tasks": 3,
+  "status": "paused",
+  "completed_tasks": [
+    {"id": "07-execute", "name": "Execute Phase 07 — backend route + frontend button", "status": "done", "commit": "b814c51"},
+    {"id": "07-verify", "name": "Verify Phase 07 — 15/15 automated checks passed", "status": "done", "commit": "1d2f9fc"},
+    {"id": "07-close", "name": "Human UAT approved — Phase 07 closed", "status": "done", "commit": "77999ba"}
+  ],
+  "remaining_tasks": [
+    {"id": "08-discuss", "name": "Discuss Phase 08 context — /gsd-discuss-phase 8", "status": "not_started"},
+    {"id": "08-plan", "name": "Plan Phase 08 — /gsd-plan-phase 8", "status": "not_started"},
+    {"id": "08-execute", "name": "Execute Phase 08 — /gsd-execute-phase 8", "status": "not_started"}
+  ],
+  "blockers": [],
+  "human_actions_pending": [
+    {
+      "action": "Run php artisan migrate on Railway MySQL — budgets table from Phase 06 still not applied to remote DB",
+      "context": "Non-blocking for Phase 08 development but needed before shipping v2.0",
+      "blocking": false
+    }
+  ],
+  "decisions": [
+    {"decision": "Phase 08 is the final v2.0 phase — REQ-24 (recurring expenses)", "rationale": "REQ-20/21/22 done in Phase 6, REQ-23 done in Phase 7", "phase": "08"},
+    {"decision": "Sequential executor mode preferred (no worktree isolation)", "rationale": "Bash permissions block worktree HEAD assertion — established in Phase 6, confirmed in Phase 7", "phase": "08"}
+  ],
+  "uncommitted_files": [],
+  "next_action": "Run /gsd-discuss-phase 8 in a fresh context window to gather requirements and implementation decisions for recurring expenses before planning",
+  "context_notes": "Phase 07 (CSV Export) complete and human-approved. All v2.0 phases except Phase 08 are done. Phase 08 directory does not exist yet — discuss-phase will create it. REQ-24 scope: user can create recurring expense entries (frequency, interval, auto-creation). Tech stack unchanged. No Railway DB migration needed for Phase 08 (new table, not dependent on budgets)."
+}

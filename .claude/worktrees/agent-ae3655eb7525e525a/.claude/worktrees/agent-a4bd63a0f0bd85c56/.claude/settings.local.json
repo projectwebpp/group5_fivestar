@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(dpkg -l 'php*')",
+      "Bash(php8.3 --version)",
+      "Bash(composer --version)",
+      "Bash(apt-cache search *)",
+      "Skill(gsd-execute-phase)",
+      "Bash(npm install *)",
+      "Bash(npm --prefix /mnt/c/Users/copfo/Desktop/group5_fivestar/frontend install)",
+      "Bash(powershell.exe -Command \"try { \\(Invoke-WebRequest -Uri 'http://localhost:5173' -UseBasicParsing -TimeoutSec 3\\).StatusCode } catch { 'FAIL' }\")",
+      "Bash(powershell.exe -Command \"try { \\(Invoke-WebRequest -Uri 'http://localhost:8000/api/health' -UseBasicParsing -TimeoutSec 3\\).Content } catch { 'FAIL' }\")",
+      "Bash(php artisan *)",
+      "Bash(powershell.exe -Command 'try { \\(Invoke-WebRequest -Uri '\\\\''http://localhost:8000/api/auth/register'\\\\'' -Method POST -Body '\\\\''{\"name\":\"Test User\",\"email\":\"test@example.com\",\"password\":\"password\",\"password_confirmation\":\"password\"}'\\\\'' -ContentType '\\\\''application/json'\\\\'' -UseBasicParsing\\).Content } catch { $_.Exception.Response.StatusCode.value__; $_.ErrorDetails.Message }')",
+      "Bash(awk '{print $2}')",
+      "Bash(kill 5170)",
+      "Bash(powershell.exe -Command ' *)",
+      "Bash(xargs kill)",
+      "Bash(powershell.exe *)",
+      "Read(//tmp/**)",
+      "Bash(xxd /mnt/c/Users/copfo/Desktop/group5_fivestar/frontend/.env)",
+      "Bash(npm run *)",
+      "Bash(kill -9 7137)",
+      "Bash(git *)",
+      "Bash(echo \"Backend PID: $!\")",
+      "Bash(echo \"Frontend PID: $!\")",
+      "Bash(composer install *)",
+      "Bash(php --version)",
+      "Bash(php composer.phar install)",
+      "Bash(lsof *)",
+      "Bash(kill 2099)",
+      "Bash(kill 2666 2693)"
+    ],
+    "defaultMode": "acceptEdits"
+  }
+}
