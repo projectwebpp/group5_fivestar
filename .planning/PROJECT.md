@@ -33,12 +33,15 @@ Users can accurately log and view their monthly expenses by category — everyth
 - ✓ User can filter by date range for trend view — v1.0
 - ✓ User can see daily and monthly average expense calculations — v1.0
 
+### Validated (v2.0)
+
+- ✓ REQ-20: User can set a monthly budget limit per category — Phase 6
+- ✓ REQ-21: User can view current spend vs budget limit per category — Phase 6
+- ✓ REQ-22: System displays over-budget warnings when spend exceeds limit — Phase 6
+- ✓ REQ-23: User can download expense data as CSV — Phase 7
+
 ### Active (v2.0)
 
-- [ ] REQ-20: User can set a monthly budget limit per category
-- [ ] REQ-21: User can view current spend vs budget limit per category
-- [ ] REQ-22: System displays over-budget warnings when spend exceeds limit
-- [ ] REQ-23: User can download expense data as CSV
 - [ ] REQ-24: User can create recurring expense entries
 
 ### Out of Scope
@@ -78,8 +81,11 @@ Users can accurately log and view their monthly expenses by category — everyth
 ## v2.0 Milestone
 
 **Goal:** Add budget management, CSV export, and recurring expenses
-**Status:** Planning — requirements confirmed 2026-05-12
+**Status:** Phase 7 complete — Phase 8 (Recurring Expenses) is final remaining phase
 **Phases:** 6+ (continues from v1.0)
+- ✅ Phase 6: Budget Management — complete 2026-05-13
+- ✅ Phase 7: CSV Export — complete 2026-05-13
+- 🔄 Phase 8: Recurring Expenses — next
 
 ---
-*Last updated: 2026-05-12 — v2.0 milestone initiated*
+*Last updated: 2026-05-13 — Phase 7 CSV Export approved; Phase 8 next*
