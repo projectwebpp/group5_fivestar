@@ -114,6 +114,40 @@ class ExpenseController extends Controller
         return response()->success(['id' => (int) $id], 'Deleted');
     }
 
+    public function export(): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        $userId = Auth::id();
+
+        $expenses = Expense::where('user_id', $userId)
+            ->with('category')
+            ->orderBy('expense_date', 'desc')
+            ->orderBy('id', 'desc')
+            ->get();
+
+        $filename = 'expenses-' . now()->format('Y-m-d') . '.csv';
+
+        return response()->streamDownload(function () use ($expenses) {
+            $handle = fopen('php://output', 'w');
+
+            // Header row — 7 columns per D-05 (date, category, description, amount, currency, notes)
+            fputcsv($handle, ['date', 'category', 'description', 'amount', 'currency', 'notes']);
+
+            // Data rows — empty $expenses produces header-only CSV per D-04
+            foreach ($expenses as $expense) {
+                fputcsv($handle, [
+                    $expense->expense_date?->format('Y-m-d'),
+                    $expense->category?->name ?? '',
+                    $expense->description,
+                    number_format((float) $expense->amount, 2, '.', ''),
+                    $expense->currency,
+                    $expense->notes ?? '',
+                ]);
+            }
+
+            fclose($handle);
+        }, $filename, ['Content-Type' => 'text/csv']);
+    }
+
     private function shape(Expense $expense): array
     {
         return [
