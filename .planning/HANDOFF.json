@@ -1,40 +1,36 @@
 {
   "version": "1.0",
-  "timestamp": "2026-05-13T21:25:00+07:00",
-  "phase": "07",
-  "phase_name": "csv-export",
-  "phase_dir": ".planning/phases/07-csv-export",
+  "timestamp": "2026-05-13T23:05:00+07:00",
+  "phase": "08",
+  "phase_name": "recurring-expenses",
+  "phase_dir": ".planning/phases/08-recurring-expenses",
   "plan": 0,
   "task": 0,
-  "total_tasks": 4,
+  "total_tasks": 3,
   "status": "paused",
   "completed_tasks": [
-    {"id": "07-discuss", "name": "Phase 07 context discussion", "status": "done", "commit": "cb42f05"},
-    {"id": "07-research", "name": "Phase 07 research (gsd-phase-researcher)", "status": "done", "commit": "d4b75d2"},
-    {"id": "07-patterns", "name": "Phase 07 pattern mapping", "status": "done", "commit": "19826cf"},
-    {"id": "07-plan", "name": "Phase 07 planning — 2 PLAN.md files", "status": "done", "commit": "456e612"}
+    {"id": "07-execute", "name": "Execute Phase 07 — backend route + frontend button", "status": "done", "commit": "b814c51"},
+    {"id": "07-verify", "name": "Verify Phase 07 — 15/15 automated checks passed", "status": "done", "commit": "1d2f9fc"},
+    {"id": "07-close", "name": "Human UAT approved — Phase 07 closed", "status": "done", "commit": "77999ba"}
   ],
   "remaining_tasks": [
-    {"id": "07-execute", "name": "Execute Phase 07 — run 07-01 and 07-02 plans", "status": "not_started"},
-    {"id": "07-verify", "name": "Verify Phase 07 — run /gsd-verify-work or manual UAT", "status": "not_started"},
-    {"id": "07-close", "name": "Human UAT approval + phase close", "status": "not_started"}
+    {"id": "08-discuss", "name": "Discuss Phase 08 context — /gsd-discuss-phase 8", "status": "not_started"},
+    {"id": "08-plan", "name": "Plan Phase 08 — /gsd-plan-phase 8", "status": "not_started"},
+    {"id": "08-execute", "name": "Execute Phase 08 — /gsd-execute-phase 8", "status": "not_started"}
   ],
   "blockers": [],
   "human_actions_pending": [
     {
       "action": "Run php artisan migrate on Railway MySQL — budgets table from Phase 06 still not applied to remote DB",
-      "context": "Non-blocking for Phase 07 development but needed before shipping v2.0",
+      "context": "Non-blocking for Phase 08 development but needed before shipping v2.0",
       "blocking": false
     }
   ],
   "decisions": [
-    {"decision": "Export button: ExpensesPage header, secondary outlined style, next to + Add Expense", "rationale": "Natural location, no new route needed", "phase": "07"},
-    {"decision": "Export ALL expenses always — no filter applied", "rationale": "User can filter in Excel/Sheets after download", "phase": "07"},
-    {"decision": "7 CSV columns: date, category, description, amount, currency, notes", "rationale": "REQ-23 spec + user chose to include notes beyond spec", "phase": "07"},
-    {"decision": "JWT auth via Axios responseType:blob + programmatic anchor — no token in URL", "rationale": "Security best practice, Axios interceptor handles auth header automatically", "phase": "07"},
-    {"decision": "Route GET /api/expenses/export MUST be registered before expenses/{id} in api.php", "rationale": "Laravel top-to-bottom route matching — export literal would be swallowed as an ID", "phase": "07"}
+    {"decision": "Phase 08 is the final v2.0 phase — REQ-24 (recurring expenses)", "rationale": "REQ-20/21/22 done in Phase 6, REQ-23 done in Phase 7", "phase": "08"},
+    {"decision": "Sequential executor mode preferred (no worktree isolation)", "rationale": "Bash permissions block worktree HEAD assertion — established in Phase 6, confirmed in Phase 7", "phase": "08"}
   ],
   "uncommitted_files": [],
-  "next_action": "Run /gsd-execute-phase 7 in a fresh context window (current session at 65% context)",
-  "context_notes": "Phase 07 planning fully complete. 2 plans in 2 waves: wave 1 = backend export() method + route, wave 2 = frontend exportExpenses() + Export CSV button on ExpensesPage. Plan checker passed after two trivial fixes (RESEARCH.md heading suffix + VALIDATION.md creation). All artifacts committed. Ready to execute — just needs fresh context window."
+  "next_action": "Run /gsd-discuss-phase 8 in a fresh context window to gather requirements and implementation decisions for recurring expenses before planning",
+  "context_notes": "Phase 07 (CSV Export) complete and human-approved. All v2.0 phases except Phase 08 are done. Phase 08 directory does not exist yet — discuss-phase will create it. REQ-24 scope: user can create recurring expense entries (frequency, interval, auto-creation). Tech stack unchanged. No Railway DB migration needed for Phase 08 (new table, not dependent on budgets)."
 }
