@@ -427,7 +427,7 @@ export async function exportExpenses(): Promise<void> {
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **CORS Content-Disposition header exposure**
    - What we know: `client.ts` fetches blob successfully (same origin or CORS-permitted). Header reading is optional — fallback is in place.
