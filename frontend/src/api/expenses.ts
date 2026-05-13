@@ -36,3 +36,23 @@ export async function updateExpense(
 export async function deleteExpense(id: number): Promise<void> {
   await apiClient.delete(`/expenses/${id}`);
 }
+
+export async function exportExpenses(): Promise<void> {
+  const res = await apiClient.get('/expenses/export', { responseType: 'blob' });
+
+  const blob = new Blob([res.data], { type: 'text/csv' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+
+  // Use Content-Disposition filename if CORS exposes it; fall back to client-derived date
+  const disposition = res.headers['content-disposition'] as string | undefined;
+  const match       = disposition?.match(/filename="?([^"]+)"?/);
+  const filename    = match?.[1] ?? `expenses-${new Date().toISOString().slice(0, 10)}.csv`;
+
+  a.href     = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
