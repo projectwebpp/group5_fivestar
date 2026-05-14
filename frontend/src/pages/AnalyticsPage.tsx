@@ -180,7 +180,7 @@ function SummaryCards({ data }: { data: AnalyticsSummary }) {
   const cards = [
     { label: "Total Expenses", value: data.total },
     { label: "Daily Average", value: data.daily_avg },
-    { label: "Monthly Average", value: data.monthly_avg },
+    // { label: "Monthly Average", value: data.monthly_avg },
   ];
   return (
     <div
@@ -377,41 +377,39 @@ export default function AnalyticsPage() {
       />
 
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 24px" }}>
-      {/* Filter bar */}
-      <AnalyticsFilterBar
-        dateFrom={dateFrom}
-        dateTo={dateTo}
-        activePreset={activePreset}
-        loading={loading}
-        onDateFromChange={handleDateFromChange}
-        onDateToChange={handleDateToChange}
-        onPreset={handlePreset}
-        onApply={handleApply}
-      />
+        {/* Filter bar */}
+        <AnalyticsFilterBar
+          dateFrom={dateFrom}
+          dateTo={dateTo}
+          activePreset={activePreset}
+          loading={loading}
+          onDateFromChange={handleDateFromChange}
+          onDateToChange={handleDateToChange}
+          onPreset={handlePreset}
+          onApply={handleApply}
+        />
 
-      {/* Error (non-blocking — show above results if present) */}
-      {error && (
-        <p style={{ color: "#C0392B", fontSize: 14, marginBottom: 16 }}>
-          {error}
-        </p>
-      )}
+        {/* Error (non-blocking — show above results if present) */}
+        {error && (
+          <p style={{ color: "#C0392B", fontSize: 14, marginBottom: 16 }}>
+            {error}
+          </p>
+        )}
 
-      {/* Loading state */}
-      {loading && (
-        <Spinner />
-      )}
+        {/* Loading state */}
+        {loading && <Spinner />}
 
-      {/* Results */}
-      {!loading && data && (
-        <>
-          <SummaryCards data={data} />
-          {data.category_breakdown.length === 0 ? (
-            <AnalyticsEmptyState />
-          ) : (
-            <CategoryPieChart data={data.category_breakdown} />
-          )}
-        </>
-      )}
+        {/* Results */}
+        {!loading && data && (
+          <>
+            <SummaryCards data={data} />
+            {data.category_breakdown.length === 0 ? (
+              <AnalyticsEmptyState />
+            ) : (
+              <CategoryPieChart data={data.category_breakdown} />
+            )}
+          </>
+        )}
       </div>
     </div>
   );
