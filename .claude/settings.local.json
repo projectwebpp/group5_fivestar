@@ -31,7 +31,11 @@
       "Bash(lsof *)",
       "Bash(kill 2099)",
       "Bash(kill 2666 2693)",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Bash(/mnt/c/xampp/php/php.exe --version)",
+      "Bash(/mnt/c/php/php.exe --version)",
+      "Bash(npx vercel *)",
+      "Bash(curl *)"
     ],
     "defaultMode": "acceptEdits"
   }

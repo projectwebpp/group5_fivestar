@@ -13,7 +13,8 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'jwt.auth' => \App\Http\Middleware\JwtMiddleware::class,
+            'jwt.auth'      => \App\Http\Middleware\JwtMiddleware::class,
+            'supabase.auth' => \App\Http\Middleware\SupabaseAuthMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

@@ -19,13 +19,13 @@ Route::prefix('auth')->group(function () {
 });
 
 // Protected auth endpoints (AUTH-03)
-Route::middleware('jwt.auth')->prefix('auth')->group(function () {
+Route::middleware('supabase.auth')->prefix('auth')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('me',      [AuthController::class, 'me']);
 });
 
-// Protected API surface — jwt.auth guard (auth:api)
-Route::middleware('auth:api')->group(function () {
+// Protected API surface — Supabase JWT guard
+Route::middleware('supabase.auth')->group(function () {
     // Phase 3: Categories (CAT-01 through CAT-05)
     Route::get('categories',               [CategoryController::class, 'index']);
     Route::post('categories',              [CategoryController::class, 'store']);
