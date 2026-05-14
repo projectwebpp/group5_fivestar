@@ -52,9 +52,10 @@ export default function BudgetPage() {
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
         <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1F1B16', margin: 0 }}>Budget</h1>
         <nav style={{ display: 'flex', gap: 16 }}>
-          <Link to="/expenses"  style={{ fontSize: 15, fontWeight: 700, color: '#7A7064',              textDecoration: 'none' }}>Expenses</Link>
-          <Link to="/analytics" style={{ fontSize: 15, fontWeight: 700, color: '#7A7064',              textDecoration: 'none' }}>Analytics</Link>
-          <Link to="/budget"    style={{ fontSize: 15, fontWeight: 700, color: 'oklch(48% 0.10 195)', textDecoration: 'none' }}>Budget</Link>
+          <Link to="/expenses"   style={{ fontSize: 15, fontWeight: 700, color: '#7A7064',              textDecoration: 'none' }}>Expenses</Link>
+          <Link to="/analytics"  style={{ fontSize: 15, fontWeight: 700, color: '#7A7064',              textDecoration: 'none' }}>Analytics</Link>
+          <Link to="/budget"     style={{ fontSize: 15, fontWeight: 700, color: 'oklch(48% 0.10 195)', textDecoration: 'none' }}>Budget</Link>
+          <Link to="/recurring"  style={{ fontSize: 15, fontWeight: 700, color: '#7A7064',              textDecoration: 'none' }}>Recurring</Link>
         </nav>
       </header>
 

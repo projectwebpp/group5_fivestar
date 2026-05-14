@@ -63,9 +63,10 @@ export default function ExpensesPage() {
         <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1F1B16', margin: 0 }}>Expenses</h1>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <nav style={{ display: 'flex', gap: 16 }}>
-            <Link to="/expenses"  style={{ fontSize: 15, fontWeight: 700, color: 'oklch(48% 0.10 195)', textDecoration: 'none' }}>Expenses</Link>
-            <Link to="/analytics" style={{ fontSize: 15, fontWeight: 700, color: '#7A7064',              textDecoration: 'none' }}>Analytics</Link>
-            <Link to="/budget"    style={{ fontSize: 15, fontWeight: 700, color: '#7A7064',              textDecoration: 'none' }}>Budget</Link>
+            <Link to="/expenses"   style={{ fontSize: 15, fontWeight: 700, color: 'oklch(48% 0.10 195)', textDecoration: 'none' }}>Expenses</Link>
+            <Link to="/analytics"  style={{ fontSize: 15, fontWeight: 700, color: '#7A7064',              textDecoration: 'none' }}>Analytics</Link>
+            <Link to="/budget"     style={{ fontSize: 15, fontWeight: 700, color: '#7A7064',              textDecoration: 'none' }}>Budget</Link>
+            <Link to="/recurring"  style={{ fontSize: 15, fontWeight: 700, color: '#7A7064',              textDecoration: 'none' }}>Recurring</Link>
           </nav>
           <button
             onClick={handleExport}

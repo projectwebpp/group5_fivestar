@@ -283,6 +283,9 @@ export default function AnalyticsPage() {
           <Link to="/budget" style={{ fontSize: 15, fontWeight: 700, color: '#7A7064', textDecoration: 'none' }}>
             Budget
           </Link>
+          <Link to="/recurring" style={{ fontSize: 15, fontWeight: 700, color: '#7A7064', textDecoration: 'none' }}>
+            Recurring
+          </Link>
         </nav>
       </header>
 

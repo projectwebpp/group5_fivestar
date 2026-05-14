@@ -7,6 +7,7 @@ import ExpenseFormPage from './pages/ExpenseFormPage';
 import CategoriesPage from './pages/CategoriesPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import BudgetPage from './pages/BudgetPage';
+import RecurringPage from './pages/RecurringPage';
 
 function RequireAuth({ children }: { children: React.ReactElement }) {
   return localStorage.getItem('auth_token') ? children : <Navigate to="/auth" replace />;
@@ -25,6 +26,7 @@ export default function App() {
         <Route path="/categories" element={<RequireAuth><CategoriesPage /></RequireAuth>} />
         <Route path="/analytics"  element={<RequireAuth><AnalyticsPage /></RequireAuth>} />
         <Route path="/budget"     element={<RequireAuth><BudgetPage /></RequireAuth>} />
+        <Route path="/recurring"  element={<RequireAuth><RecurringPage /></RequireAuth>} />
       </Routes>
     </BrowserRouter>
   );
