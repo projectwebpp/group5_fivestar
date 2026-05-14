@@ -1,31 +1,43 @@
 {
   "version": "1.0",
-  "timestamp": "2026-05-13T16:28:25.000Z",
+  "timestamp": "2026-05-14T01:59:33.000Z",
   "phase": "08",
   "phase_name": "recurring-expenses",
   "phase_dir": ".planning/phases/08-recurring-expenses",
-  "plan": 0,
-  "task": 0,
+  "plan": 3,
+  "task": 3,
   "total_tasks": 3,
   "status": "paused",
-  "completed_tasks": [],
+  "completed_tasks": [
+    {"id": 1, "name": "08-01: Backend — migration, RecurringExpense model, RecurringExpenseController, routes, processRecurring() in ExpenseController::index(), feature tests", "status": "done", "commit": "28df2df"},
+    {"id": 2, "name": "08-02: Frontend types (recurring.ts) + API client (api/recurring.ts)", "status": "done", "commit": "489b044"},
+    {"id": 3, "name": "08-03: RecurringPage.tsx, App.tsx routing, nav links on all 4 pages — CODE DONE, paused at human-verify checkpoint", "status": "in_progress", "progress": "All code committed (61153bc, 400dda5), TypeScript clean, awaiting human browser verification"}
+  ],
   "remaining_tasks": [
-    {"id": 1, "name": "08-01: Backend — migration, RecurringExpense model, RecurringExpenseController, routes, processRecurring() in ExpenseController, tests", "status": "not_started"},
-    {"id": 2, "name": "08-02: Frontend types & API client — recurring.ts types + api/recurring.ts", "status": "not_started"},
-    {"id": 3, "name": "08-03: Frontend UI — RecurringPage.tsx, App.tsx routing, nav link, ExpensesPage/AnalyticsPage/BudgetPage nav sync", "status": "not_started"}
+    {"id": 4, "name": "08-03 post-checkpoint: write SUMMARY.md after human approval", "status": "not_started"},
+    {"id": 5, "name": "Phase 8 verification (gsd-verifier)", "status": "not_started"},
+    {"id": 6, "name": "Phase 8 completion — mark ROADMAP/STATE complete", "status": "not_started"}
   ],
   "blockers": [],
   "human_actions_pending": [
-    {"action": "Run `php artisan migrate` on Railway MySQL after 08-01 is executed", "context": "recurring_expenses table migration will be created in 08-01; Railway MySQL requires manual migration run", "blocking": false}
+    {
+      "action": "Browser-test RecurringPage UI — full checklist in 08-03-PLAN.md checkpoint section",
+      "context": "All code committed, TypeScript clean. Dev servers: `cd backend && php artisan serve` + `cd frontend && npm run dev`. Test: nav links, auth guard, create/edit/delete template, auto-creation on /expenses.",
+      "blocking": true
+    },
+    {
+      "action": "Run `php artisan migrate` on Railway MySQL",
+      "context": "recurring_expenses migration created in 08-01. Railway does not auto-run migrations.",
+      "blocking": false
+    }
   ],
   "decisions": [
-    {"decision": "Auto-creation on-request — processRecurring() called in ExpenseController::index() before fetching results", "rationale": "No background scheduler needed; works on Vercel Hobby plan", "phase": "08"},
-    {"decision": "One entry per template per trigger — avoids flooding expense list after long absence", "rationale": "User gets most recent missed period only, not full backfill", "phase": "08"},
-    {"decision": "Deduplication via last_created_date on recurring template", "rationale": "Simple, no extra table needed — create entry only if today > next_due(last_created_date + frequency)", "phase": "08"},
-    {"decision": "Three frequencies: daily, weekly, monthly (ENUM in DB)", "rationale": "Covers v2 scope; no end date — template active until deleted", "phase": "08"},
-    {"decision": "RecurringPage uses table layout + inline form (no separate route) — mirrors BudgetPage pattern", "rationale": "Consistent with Phase 6 established patterns (D-05/D-06)", "phase": "08"}
+    {"decision": "processRecurring() wrapped in try/catch in ExpenseController::index()", "rationale": "Blocking constraint — broken template must never 500 GET /expenses", "phase": "08"},
+    {"decision": "RecurringPage mirrors BudgetPage — inline form above table, inline edit, inline delete-confirm (no modal)", "rationale": "D-05/D-06 from 08-CONTEXT.md", "phase": "08"},
+    {"decision": "4-link nav: Expenses | Analytics | Budget | Recurring on all pages", "rationale": "D-11 — Recurring is permanent 4th nav item", "phase": "08"},
+    {"decision": "Sequential executor mode (no worktree isolation) confirmed for this project", "rationale": "Phase 6 and 7 git history show main-branch commits; stale worktree removed at session start", "phase": "08"}
   ],
-  "uncommitted_files": [".planning/STATE.md"],
-  "next_action": "Execute Phase 8 with `/gsd-execute-phase 8` — all 3 plans are ready, start with 08-01 (Wave 1: backend)",
-  "context_notes": "Phase 8 plans are fully created and reviewed. No code has been written yet for this phase. The context in 08-CONTEXT.md is authoritative — read it before executing. BudgetPage.tsx is the primary UI reference. The processRecurring() hook goes in ExpenseController::index() at the very start. Migration filename: 2026_05_13_000001_create_recurring_expenses_table.php."
+  "uncommitted_files": [],
+  "next_action": "User runs browser test → replies 'approved' → orchestrator resumes executor agent ab14e9779cd1c48e6 via SendMessage with user_response='approved' → agent writes SUMMARY.md → orchestrator spawns gsd-verifier for phase verification.",
+  "context_notes": "Phase 8 is 95% done. All 3 plans have code committed and TypeScript-clean. Only remaining: human UAT approval of RecurringPage UI, SUMMARY.md for 08-03, and phase-level verification. CRITICAL: The continuation agent ID is ab14e9779cd1c48e6 — use SendMessage(to='ab14e9779cd1c48e6', message='approved') to resume it after user approval. Do NOT spawn a new 08-03 executor."
 }
