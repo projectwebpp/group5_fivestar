@@ -1,4 +1,5 @@
-import { useState, FormEvent } from 'react';
+import { useState } from 'react';
+import type { FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login, register } from '../api/auth';
 import { color, font, radius, shadow } from '../theme';
@@ -83,6 +84,7 @@ export default function AuthPage() {
         ? await login(email, password)
         : await register(email, password, confirm);
       localStorage.setItem('auth_token', token);
+      localStorage.setItem('user_email', email);
       navigate('/expenses');
     } catch (err: unknown) {
       const e = err as { response?: { data?: { errors?: Array<{ message: string }>; message?: string } } };
@@ -100,7 +102,7 @@ export default function AuthPage() {
     <div
       style={{
         minHeight: '100vh',
-        background: `linear-gradient(135deg, #F7F3EE 0%, #EBE4D9 100%)`,
+        background: `linear-gradient(135deg, #F4EFE6 0%, #EDE7DA 100%)`,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

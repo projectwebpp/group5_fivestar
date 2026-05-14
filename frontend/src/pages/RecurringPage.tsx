@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
-import Header from '../components/Header';
 import Spinner from '../components/Spinner';
-import { color, font } from '../theme';
 import { listRecurring, createRecurring, updateRecurring, deleteRecurring } from '../api/recurring';
 import { listCategories } from '../api/categories';
 import type { Category } from '../api/categories';
@@ -97,10 +95,7 @@ export default function RecurringPage() {
   };
 
   return (
-    <div style={{ fontFamily: font, minHeight: '100vh', background: color.bg, paddingBottom: 64 }}>
-
-      <Header title="Recurring Expenses" />
-      <div style={{ maxWidth: 900, margin: '0 auto', padding: '0 24px' }}>
+    <div style={{ maxWidth: 900, margin: '0 auto' }}>
 
       {/* Page-level error */}
       <InlineError message={error} />
@@ -397,7 +392,6 @@ export default function RecurringPage() {
           </table>
         </div>
       )}
-      </div>
     </div>
   );
 }

@@ -1,416 +1,269 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import Header from "../components/Header";
 import Spinner from "../components/Spinner";
-import { color, font } from "../theme";
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import { color } from "../theme";
 import { getAnalyticsSummary } from "../api/analytics";
 import type { AnalyticsSummary, CategoryBreakdown } from "../types/analytics";
 
-// ─── Constants ────────────────────────────────────────────────────────────────
+const TH_MONTHS_FULL  = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
 
-const COLORS = [
-  "#4E79A7",
-  "#F28E2B",
-  "#59A14F",
-  "#E15759",
-  "#76B7B2",
-  "#EDC948",
-  "#B07AA1",
-  "#FF9DA7",
+const CAT_COLORS = [
+  'oklch(62% 0.14 35)', 'oklch(58% 0.13 230)', 'oklch(60% 0.14 330)',
+  'oklch(58% 0.11 95)', 'oklch(60% 0.12 165)', 'oklch(60% 0.15 12)',
+  'oklch(55% 0.13 275)', 'oklch(55% 0.03 80)',
 ];
 
-// ─── Date preset helpers ───────────────────────────────────────────────────────
-
-function toISO(d: Date): string {
-  return d.toISOString().split("T")[0];
+function formatTHB(n: number) {
+  return new Intl.NumberFormat('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(Math.round(n));
 }
 
-function getPresetDates(
-  preset: "this-month" | "last-month" | "last-3-months",
-): { from: string; to: string } {
+function toISO(d: Date) { return d.toISOString().split('T')[0]; }
+
+function getPresetDates(preset: string): { from: string; to: string } {
   const now = new Date();
-  if (preset === "this-month") {
+  if (preset === 'last-month') {
     return {
-      from: toISO(new Date(now.getFullYear(), now.getMonth(), 1)),
+      from: toISO(new Date(now.getFullYear(), now.getMonth() - 1, 1)),
+      to: toISO(new Date(now.getFullYear(), now.getMonth(), 0)),
+    };
+  }
+  if (preset === 'last-3') {
+    return {
+      from: toISO(new Date(now.getFullYear(), now.getMonth() - 2, 1)),
       to: toISO(now),
     };
   }
-  if (preset === "last-month") {
-    const first = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    const last = new Date(now.getFullYear(), now.getMonth(), 0);
-    return { from: toISO(first), to: toISO(last) };
-  }
-  // last-3-months
-  const first = new Date(now.getFullYear(), now.getMonth() - 2, 1);
-  return { from: toISO(first), to: toISO(now) };
+  return {
+    from: toISO(new Date(now.getFullYear(), now.getMonth(), 1)),
+    to: toISO(now),
+  };
 }
 
-// ─── Sub-components ────────────────────────────────────────────────────────────
-
-interface AnalyticsFilterBarProps {
-  dateFrom: string;
-  dateTo: string;
-  activePreset: string | null;
-  loading: boolean;
-  onDateFromChange: (v: string) => void;
-  onDateToChange: (v: string) => void;
-  onPreset: (preset: "this-month" | "last-month" | "last-3-months") => void;
-  onApply: () => void;
+function useIsDesktop() {
+  const [v, setV] = useState(() => window.innerWidth >= 960);
+  useEffect(() => {
+    const h = () => setV(window.innerWidth >= 960);
+    window.addEventListener('resize', h);
+    return () => window.removeEventListener('resize', h);
+  }, []);
+  return v;
 }
 
-function AnalyticsFilterBar({
-  dateFrom,
-  dateTo,
-  activePreset,
-  loading,
-  onDateFromChange,
-  onDateToChange,
-  onPreset,
-  onApply,
-}: AnalyticsFilterBarProps) {
-  const presets: {
-    id: "this-month" | "last-month" | "last-3-months";
-    label: string;
-  }[] = [
-    { id: "this-month", label: "This Month" },
-    { id: "last-month", label: "Last Month" },
-    { id: "last-3-months", label: "Last 3 Months" },
-  ];
-
+function KpiCard({ label, value, sub, tone }: { label: string; value: string; sub?: string; tone?: string }) {
   return (
-    <div
-      style={{
-        background: "#EDE7DA",
-        padding: 16,
-        borderRadius: 12,
-        marginBottom: 24,
-        display: "flex",
-        flexWrap: "wrap",
-        alignItems: "flex-end",
-        gap: 8,
-      }}
-    >
-      {presets.map((p) => (
-        <button
-          key={p.id}
-          onClick={() => onPreset(p.id)}
-          style={{
-            padding: "8px 12px",
-            background:
-              activePreset === p.id ? "oklch(48% 0.10 195)" : "#EDE7DA",
-            color: activePreset === p.id ? "#fff" : "#7A7064",
-            fontWeight: activePreset === p.id ? 700 : 400,
-            fontSize: 13,
-            border: "1px solid rgba(31,27,22,0.1)",
-            borderRadius: 8,
-            cursor: "pointer",
-          }}
-        >
-          {p.label}
-        </button>
-      ))}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-          flexWrap: "wrap",
-        }}
-      >
-        <label style={{ fontSize: 13, color: "#7A7064" }}>
-          From
-          <input
-            type="date"
-            value={dateFrom}
-            onChange={(e) => {
-              onDateFromChange(e.target.value);
-            }}
-            style={{
-              display: "block",
-              padding: "6px 8px",
-              borderRadius: 6,
-              border: "1px solid rgba(31,27,22,0.1)",
-              fontSize: 14,
-              marginTop: 4,
-            }}
-          />
-        </label>
-        <label style={{ fontSize: 13, color: "#7A7064" }}>
-          To
-          <input
-            type="date"
-            value={dateTo}
-            onChange={(e) => {
-              onDateToChange(e.target.value);
-            }}
-            style={{
-              display: "block",
-              padding: "6px 8px",
-              borderRadius: 6,
-              border: "1px solid rgba(31,27,22,0.1)",
-              fontSize: 14,
-              marginTop: 4,
-            }}
-          />
-        </label>
-      </div>
-      <button
-        onClick={onApply}
-        disabled={loading}
-        style={{
-          padding: "8px 16px",
-          background: "oklch(48% 0.10 195)",
-          color: "#fff",
-          fontWeight: 700,
-          fontSize: 15,
-          border: "none",
-          borderRadius: 12,
-          cursor: loading ? "not-allowed" : "pointer",
-          opacity: loading ? 0.6 : 1,
-        }}
-      >
-        Apply
-      </button>
+    <div style={{
+      background: color.surface, borderRadius: 16, padding: '16px 18px',
+      border: `1px solid ${color.border}`,
+      boxShadow: '0 1px 2px rgba(31,27,22,0.04), 0 8px 24px rgba(31,27,22,0.04)',
+    }}>
+      <div style={{ fontSize: 13, color: color.text2, fontWeight: 500, whiteSpace: 'nowrap' }}>{label}</div>
+      <div style={{
+        fontSize: 22, fontWeight: 700, color: tone ?? color.text1,
+        marginTop: 4, letterSpacing: -0.4,
+        fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap',
+      }}>{value}</div>
+      {sub && <div style={{ fontSize: 12, color: color.text2, marginTop: 4 }}>{sub}</div>}
     </div>
   );
 }
 
-function SummaryCards({ data }: { data: AnalyticsSummary }) {
-  const cards = [
-    { label: "Total Expenses", value: data.total },
-    { label: "Daily Average", value: data.daily_avg },
-    // { label: "Monthly Average", value: data.monthly_avg },
-  ];
+function ChartHeader({ title, sub }: { title: string; sub?: string }) {
   return (
-    <div
-      style={{ display: "flex", gap: 16, marginBottom: 24, flexWrap: "wrap" }}
-    >
-      {cards.map((card) => (
-        <div
-          key={card.label}
-          style={{
-            flex: 1,
-            minWidth: 120,
-            background: "#FFFCF7",
-            borderRadius: 12,
-            padding: "16px 24px",
-            boxShadow:
-              "0 1px 2px rgba(31,27,22,0.04), 0 8px 24px rgba(31,27,22,0.04)",
-            border: "1px solid rgba(31,27,22,0.04)",
-          }}
-        >
-          <p style={{ fontSize: 13, color: "#7A7064", margin: "0 0 4px" }}>
-            {card.label}
-          </p>
-          <p
-            style={{
-              fontSize: 22,
-              fontWeight: 700,
-              color: "#1F1B16",
-              margin: 0,
-            }}
-          >
-            ฿{card.value.toFixed(2)}
-          </p>
+    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 16, gap: 12 }}>
+      <div style={{ fontSize: 17, fontWeight: 700, color: color.text1 }}>{title}</div>
+      {sub && <div style={{ fontSize: 13, color: color.text2 }}>{sub}</div>}
+    </div>
+  );
+}
+
+function DonutChart({ breakdown }: { breakdown: CategoryBreakdown[] }) {
+  const total = breakdown.reduce((s, c) => s + c.total, 0);
+  const r = 64, c = 80, stroke = 22;
+  const circ = 2 * Math.PI * r;
+  let offset = 0;
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 18, flexWrap: 'wrap' }}>
+      <div style={{ position: 'relative', flexShrink: 0 }}>
+        <svg width={c * 2} height={c * 2} style={{ transform: 'rotate(-90deg)' }}>
+          <circle cx={c} cy={c} r={r} fill="none" stroke={color.surfaceAlt} strokeWidth={stroke} />
+          {breakdown.map((s, i) => {
+            const pct = total > 0 ? s.total / total : 0;
+            const len = pct * circ;
+            const el = (
+              <circle key={s.name}
+                cx={c} cy={c} r={r} fill="none"
+                stroke={CAT_COLORS[i % CAT_COLORS.length]}
+                strokeWidth={stroke}
+                strokeDasharray={`${len} ${circ - len}`}
+                strokeDashoffset={-offset}
+              />
+            );
+            offset += len;
+            return el;
+          })}
+        </svg>
+        <div style={{
+          position: 'absolute', inset: 0,
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+          textAlign: 'center',
+        }}>
+          <div style={{ fontSize: 11, color: color.text2 }}>รวม</div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: color.text1, fontVariantNumeric: 'tabular-nums', letterSpacing: -0.3 }}>
+            ฿{formatTHB(total)}
+          </div>
+        </div>
+      </div>
+      <div style={{ flex: 1, minWidth: 140, display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {breakdown.length === 0 && <div style={{ fontSize: 13, color: color.text2 }}>ยังไม่มีข้อมูล</div>}
+        {breakdown.slice(0, 5).map((s, i) => (
+          <div key={s.name} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ width: 10, height: 10, borderRadius: 3, background: CAT_COLORS[i % CAT_COLORS.length], flexShrink: 0 }} />
+            <div style={{ flex: 1, fontSize: 13, color: color.text1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.name}</div>
+            <div style={{ fontSize: 13, color: color.text2, fontVariantNumeric: 'tabular-nums' }}>{Math.round(s.percentage)}%</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function TopCategories({ breakdown }: { breakdown: CategoryBreakdown[] }) {
+  const total = breakdown.reduce((s, c) => s + c.total, 0);
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+      {breakdown.length === 0 && <div style={{ fontSize: 13, color: color.text2 }}>ยังไม่มีข้อมูล</div>}
+      {breakdown.slice(0, 5).map((r, i) => (
+        <div key={r.name} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{
+            width: 36, height: 36, borderRadius: Math.round(36 * 0.32),
+            background: CAT_COLORS[i % CAT_COLORS.length] + '22',
+            color: CAT_COLORS[i % CAT_COLORS.length],
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 14, fontWeight: 700, flexShrink: 0,
+          }}>{i + 1}</div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4, gap: 8 }}>
+              <div style={{ fontSize: 14, fontWeight: 600, color: color.text1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{r.name}</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: color.text1, fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+                ฿{formatTHB(r.total)}
+              </div>
+            </div>
+            <div style={{ height: 6, borderRadius: 999, background: color.surfaceAlt, overflow: 'hidden' }}>
+              <div style={{
+                width: `${Math.max((total > 0 ? r.total / total : 0) * 100, 2)}%`, height: '100%',
+                background: CAT_COLORS[i % CAT_COLORS.length], borderRadius: 999,
+              }} />
+            </div>
+          </div>
         </div>
       ))}
     </div>
   );
 }
 
-function CategoryPieChart({ data }: { data: CategoryBreakdown[] }) {
-  return (
-    <div
-      style={{
-        background: "#FFFCF7",
-        borderRadius: 16,
-        padding: 24,
-        boxShadow:
-          "0 1px 2px rgba(31,27,22,0.04), 0 8px 24px rgba(31,27,22,0.04)",
-        border: "1px solid rgba(31,27,22,0.04)",
-      }}
-    >
-      <p
-        style={{
-          fontSize: 15,
-          fontWeight: 700,
-          color: "#1F1B16",
-          marginBottom: 16,
-          marginTop: 0,
-        }}
-      >
-        Spending by Category
-      </p>
-      <ResponsiveContainer width="100%" height={280}>
-        <PieChart>
-          <Pie
-            data={data}
-            dataKey="percentage"
-            nameKey="name"
-            cx="50%"
-            cy="50%"
-            outerRadius={110}
-            innerRadius={0}
-          >
-            {data.map((_entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
-              />
-            ))}
-          </Pie>
-          <Tooltip
-            formatter={(
-              value: number,
-              name: string,
-              props: { payload: CategoryBreakdown },
-            ) => [`฿${props.payload.total.toFixed(2)} (${value}%)`, name]}
-          />
-        </PieChart>
-      </ResponsiveContainer>
-    </div>
-  );
-}
-
-function AnalyticsEmptyState() {
-  return (
-    <div style={{ padding: "48px 24px", textAlign: "center" }}>
-      <h2
-        style={{
-          fontSize: 22,
-          fontWeight: 700,
-          color: "#1F1B16",
-          marginBottom: 12,
-        }}
-      >
-        No expenses for this period
-      </h2>
-      <p style={{ fontSize: 15, color: "#7A7064", marginBottom: 24 }}>
-        Try selecting a different date range, or add some expenses first.
-      </p>
-      <Link
-        to="/expenses/new"
-        style={{
-          display: "inline-block",
-          padding: "10px 20px",
-          background: "oklch(48% 0.10 195)",
-          color: "#fff",
-          fontWeight: 700,
-          fontSize: 15,
-          borderRadius: 12,
-          textDecoration: "none",
-        }}
-      >
-        Add Expense
-      </Link>
-    </div>
-  );
-}
-
-// ─── Main Page ─────────────────────────────────────────────────────────────────
+const PRESETS = [
+  { id: 'this-month', label: 'เดือนนี้' },
+  { id: 'last-month', label: 'เดือนที่แล้ว' },
+  { id: 'last-3',     label: '3 เดือน' },
+];
 
 export default function AnalyticsPage() {
-  const today = new Date();
-  const defaultFrom = toISO(new Date(today.getFullYear(), today.getMonth(), 1));
-  const defaultTo = toISO(today);
+  const isDesktop = useIsDesktop();
+  const now = new Date();
+  const monthLabel = `${TH_MONTHS_FULL[now.getMonth()]} ${now.getFullYear() + 543}`;
 
-  const [dateFrom, setDateFrom] = useState(defaultFrom);
-  const [dateTo, setDateTo] = useState(defaultTo);
-  const [activePreset, setActivePreset] = useState<string | null>("this-month");
+  const [preset, setPreset] = useState('this-month');
   const [data, setData] = useState<AnalyticsSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchData = (from: string, to: string) => {
+  const fetchData = (p: string) => {
+    const { from, to } = getPresetDates(p);
     setLoading(true);
     setError(null);
     getAnalyticsSummary(from, to)
-      .then((d) => setData(d))
-      .catch(() => setError("Failed to load analytics. Please try again."))
+      .then(d => setData(d))
+      .catch(() => setError('โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่'))
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => {
-    fetchData(defaultFrom, defaultTo);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useEffect(() => { fetchData('this-month'); }, []);
 
-  const handleApply = () => {
-    setActivePreset(null);
-    fetchData(dateFrom, dateTo);
-  };
+  const handlePreset = (p: string) => { setPreset(p); fetchData(p); };
 
-  const handlePreset = (
-    preset: "this-month" | "last-month" | "last-3-months",
-  ) => {
-    const { from, to } = getPresetDates(preset);
-    setDateFrom(from);
-    setDateTo(to);
-    setActivePreset(preset);
-    fetchData(from, to);
-  };
-
-  const handleDateFromChange = (v: string) => {
-    setDateFrom(v);
-    setActivePreset(null);
-  };
-
-  const handleDateToChange = (v: string) => {
-    setDateTo(v);
-    setActivePreset(null);
+  const card = {
+    background: color.surface, borderRadius: 20, padding: 22,
+    border: `1px solid ${color.border}`,
+    boxShadow: '0 1px 2px rgba(31,27,22,0.04), 0 8px 24px rgba(31,27,22,0.04)',
   };
 
   return (
-    <div
-      style={{
-        fontFamily: font,
-        minHeight: "100vh",
-        background: color.bg,
-        paddingBottom: 64,
-      }}
-    >
-      <Header
-        title="Analytics"
-        // onExport={handleExport}
-        // exportLoading={exportLoading}
-      />
-
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 24px" }}>
-        {/* Filter bar */}
-        <AnalyticsFilterBar
-          dateFrom={dateFrom}
-          dateTo={dateTo}
-          activePreset={activePreset}
-          loading={loading}
-          onDateFromChange={handleDateFromChange}
-          onDateToChange={handleDateToChange}
-          onPreset={handlePreset}
-          onApply={handleApply}
-        />
-
-        {/* Error (non-blocking — show above results if present) */}
-        {error && (
-          <p style={{ color: "#C0392B", fontSize: 14, marginBottom: 16 }}>
-            {error}
-          </p>
-        )}
-
-        {/* Loading state */}
-        {loading && <Spinner />}
-
-        {/* Results */}
-        {!loading && data && (
-          <>
-            <SummaryCards data={data} />
-            {data.category_breakdown.length === 0 ? (
-              <AnalyticsEmptyState />
-            ) : (
-              <CategoryPieChart data={data.category_breakdown} />
-            )}
-          </>
-        )}
+    <div>
+      {/* Header */}
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontSize: isDesktop ? 28 : 22, fontWeight: 700, color: color.text1, letterSpacing: -0.4 }}>
+          สถิติการใช้จ่าย
+        </div>
+        <div style={{ fontSize: 14, color: color.text2, marginTop: 4 }}>{monthLabel}</div>
       </div>
+
+      {/* Preset tabs */}
+      <div style={{
+        display: 'flex', gap: 4, marginBottom: 20,
+        background: color.surfaceAlt, borderRadius: 14, padding: 4, alignSelf: 'flex-start',
+        width: 'fit-content',
+      }}>
+        {PRESETS.map(p => (
+          <button key={p.id} onClick={() => handlePreset(p.id)}
+            style={{
+              all: 'unset', cursor: 'pointer',
+              padding: '9px 16px', borderRadius: 10,
+              background: preset === p.id ? color.surface : 'transparent',
+              color: preset === p.id ? color.text1 : color.text2,
+              fontSize: 13, fontWeight: preset === p.id ? 600 : 500,
+              whiteSpace: 'nowrap',
+              boxShadow: preset === p.id ? '0 1px 2px rgba(31,27,22,0.04)' : 'none',
+              transition: 'all 160ms ease',
+            }}
+          >{p.label}</button>
+        ))}
+      </div>
+
+      {loading && <Spinner />}
+      {error && <p style={{ color: color.danger, fontSize: 14 }}>{error}</p>}
+
+      {!loading && data && (
+        <>
+          {/* KPI cards */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: isDesktop ? 'repeat(3, 1fr)' : 'repeat(2, 1fr)',
+            gap: 12, marginBottom: 20,
+          }}>
+            <KpiCard label="รายจ่ายรวม" value={'฿' + formatTHB(data.total)} sub="ช่วงที่เลือก" tone={color.expense} />
+            <KpiCard label="เฉลี่ย/วัน" value={'฿' + formatTHB(data.daily_avg)} sub="รายจ่าย" />
+            <KpiCard label="เฉลี่ย/เดือน" value={'฿' + formatTHB(data.monthly_avg)} sub="ประมาณการ" />
+          </div>
+
+          {data.category_breakdown.length === 0 ? (
+            <div style={{ ...card, textAlign: 'center', color: color.text2 }}>
+              <div style={{ fontSize: 18, fontWeight: 700, color: color.text1, marginBottom: 8 }}>ยังไม่มีข้อมูล</div>
+              <div style={{ fontSize: 14 }}>ลองเลือกช่วงเวลาอื่น หรือเพิ่มรายการก่อน</div>
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: isDesktop ? '1.4fr 1fr' : '1fr', gap: 16, alignItems: 'start' }}>
+              <div style={{ ...card }}>
+                <ChartHeader title="แบ่งตามหมวดหมู่" sub="รายจ่าย" />
+                <DonutChart breakdown={data.category_breakdown} />
+              </div>
+              <div style={{ ...card }}>
+                <ChartHeader title="หมวดที่ใช้มากสุด" />
+                <TopCategories breakdown={data.category_breakdown} />
+              </div>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }

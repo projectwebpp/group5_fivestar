@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Header from "../components/Header";
 import Spinner from "../components/Spinner";
-import { color, font } from "../theme";
 import {
   getBudgets,
   createBudget,
@@ -59,16 +57,7 @@ export default function BudgetPage() {
   };
 
   return (
-    <div
-      style={{
-        fontFamily: font,
-        minHeight: "100vh",
-        background: color.bg,
-        paddingBottom: 64,
-      }}
-    >
-      <Header title="Budget" />
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 24px" }}>
+    <div style={{ maxWidth: 900, margin: "0 auto" }}>
         {/* Error */}
         {error && (
           <p style={{ color: "#C0392B", fontSize: 14, marginBottom: 16 }}>
@@ -288,7 +277,6 @@ export default function BudgetPage() {
             </table>
           </div>
         )}
-      </div>
     </div>
   );
 }

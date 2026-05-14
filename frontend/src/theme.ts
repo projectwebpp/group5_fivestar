@@ -1,28 +1,31 @@
-export const font = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+export const font = "'Inter', 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
 
 export const color = {
-  bg:           '#F7F3EE',
-  surface:      '#FFFFFF',
-  surfaceAlt:   '#F0EBE3',
-  border:       'rgba(30,24,16,0.08)',
-  borderStrong: 'rgba(30,24,16,0.18)',
+  bg:           '#F4EFE6',
+  surface:      '#FFFCF7',
+  surfaceAlt:   '#EDE7DA',
+  border:       'rgba(31,27,22,0.04)',
+  borderStrong: 'rgba(31,27,22,0.07)',
 
-  text1: '#1A1410',
-  text2: '#6B6258',
-  text3: '#A89E94',
+  text1: '#1F1B16',
+  text2: '#7A7064',
+  text3: '#A39C8E',
 
-  accent:      '#0D9488',
-  accentHover: '#0F766E',
-  accentLight: '#F0FDFA',
+  accent:      'oklch(48% 0.10 195)',
+  accentHover: 'oklch(43% 0.10 195)',
+  accentLight: 'oklch(96% 0.03 195)',
 
-  danger:      '#DC2626',
-  dangerLight: '#FEF2F2',
+  income:      'oklch(50% 0.14 155)',
+  expense:     'oklch(54% 0.16 25)',
+
+  danger:      'oklch(54% 0.16 25)',
+  dangerLight: 'oklch(96% 0.03 25)',
 };
 
 export const shadow = {
-  sm: '0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03)',
-  md: '0 4px 16px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04)',
-  lg: '0 12px 40px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)',
+  sm: '0 1px 2px rgba(31,27,22,0.04)',
+  md: '0 1px 2px rgba(31,27,22,0.04), 0 8px 24px rgba(31,27,22,0.04)',
+  lg: '0 12px 40px rgba(31,27,22,0.08)',
 };
 
 export const radius = {
