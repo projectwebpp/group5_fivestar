@@ -6,13 +6,24 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreExpenseRequest;
 use App\Http\Requests\UpdateExpenseRequest;
 use App\Models\Expense;
+use App\Models\RecurringExpense;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ExpenseController extends Controller
 {
     public function index(Request $request)
     {
+        // D-01: Auto-create any due recurring expense entries before fetching results.
+        // Wrapped in try/catch — a broken template must NEVER propagate as a 500 (T-08-07).
+        try {
+            $this->processRecurring(Auth::id());
+        } catch (\Throwable $e) {
+            Log::warning('processRecurring failed: ' . $e->getMessage());
+        }
+
         $request->validate([
             'date_from'   => ['sometimes', 'date_format:Y-m-d'],
             'date_to'     => ['sometimes', 'date_format:Y-m-d', 'after_or_equal:date_from'],
@@ -146,6 +157,56 @@ class ExpenseController extends Controller
 
             fclose($handle);
         }, $filename, ['Content-Type' => 'text/csv']);
+    }
+
+    /**
+     * Auto-create one due expense entry per overdue recurring template.
+     * D-01: Triggered on GET /expenses.
+     * D-02: Deduplication via last_created_date.
+     * D-03: At most 1 entry per template per call (no backfill).
+     * T-08-03: user_id comes from $userId argument (Auth::id()), never from template or request.
+     * T-08-07: Entire body wrapped in try/catch in index() — errors are logged, never exposed.
+     */
+    private function processRecurring(int $userId): void
+    {
+        $today     = Carbon::today();
+        $templates = RecurringExpense::where('user_id', $userId)
+            ->whereDate('start_date', '<=', $today)
+            ->get();
+
+        foreach ($templates as $template) {
+            // Base date: last_created_date if set, otherwise start_date
+            $base = $template->last_created_date
+                ? Carbon::parse($template->last_created_date->format('Y-m-d'))
+                : Carbon::parse($template->start_date->format('Y-m-d'));
+
+            // Next due date per frequency (D-10)
+            $nextDue = match ($template->frequency) {
+                'daily'   => $base->copy()->addDay(),
+                'weekly'  => $base->copy()->addWeek(),
+                'monthly' => $base->copy()->addMonth(),
+            };
+
+            // Skip if not yet due (D-02)
+            if ($today->lt($nextDue)) {
+                continue;
+            }
+
+            // Create exactly one entry for the most recent due period (D-03)
+            Expense::create([
+                'user_id'      => $userId,
+                'amount'       => $template->amount,
+                'currency'     => $template->currency,
+                'category_id'  => $template->category_id,
+                'description'  => $template->description,
+                'expense_date' => $nextDue->toDateString(),
+                'is_recurring' => true,
+                'recurring_id' => $template->id,
+            ]);
+
+            // CRITICAL: set to $nextDue (not today) to preserve recurrence anchoring (D-02, Pitfall 1)
+            $template->update(['last_created_date' => $nextDue->toDateString()]);
+        }
     }
 
     private function shape(Expense $expense): array

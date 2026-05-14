@@ -54,11 +54,20 @@ class RecurringExpenseTest extends TestCase
 
     /**
      * Create a RecurringExpense row for $user, merging $overrides.
-     * Returns markTestIncomplete stub until Task 2 provides the model.
      */
     private function seedRecurring(User $user, array $overrides = []): RecurringExpense
     {
-        $this->markTestIncomplete('seedRecurring requires RecurringExpense model (Task 2)');
+        $category = $this->seedCategory($user);
+        return RecurringExpense::create(array_merge([
+            'user_id'           => $user->id,
+            'category_id'       => $category->id,
+            'description'       => 'Monthly Coffee',
+            'amount'            => 150.00,
+            'currency'          => 'THB',
+            'frequency'         => 'monthly',
+            'start_date'        => Carbon::today()->subMonth()->toDateString(),
+            'last_created_date' => null,
+        ], $overrides));
     }
 
     // ---------------------------------------------------------------------------
@@ -67,7 +76,22 @@ class RecurringExpenseTest extends TestCase
 
     public function test_store_creates_template(): void
     {
-        $this->markTestIncomplete('POST /api/recurring — implement in Task 3');
+        [$user, $token] = $this->registerAndGetToken();
+        $category       = $this->seedCategory($user);
+
+        $res = $this->withToken($token)->postJson('/api/recurring', [
+            'description' => 'Monthly Rent',
+            'category_id' => $category->id,
+            'amount'      => 5000.00,
+            'currency'    => 'THB',
+            'frequency'   => 'monthly',
+            'start_date'  => '2026-05-01',
+        ]);
+
+        $res->assertStatus(201)
+            ->assertJson(['success' => true])
+            ->assertJsonPath('data.frequency', 'monthly')
+            ->assertJsonPath('data.description', 'Monthly Rent');
     }
 
     // ---------------------------------------------------------------------------
@@ -76,7 +100,17 @@ class RecurringExpenseTest extends TestCase
 
     public function test_index_returns_templates(): void
     {
-        $this->markTestIncomplete('GET /api/recurring — implement in Task 3');
+        [$user, $token] = $this->registerAndGetToken();
+
+        $this->seedRecurring($user, ['description' => 'Coffee']);
+        $this->seedRecurring($user, ['description' => 'Gym']);
+
+        $res = $this->withToken($token)->getJson('/api/recurring');
+
+        $res->assertStatus(200)
+            ->assertJson(['success' => true]);
+
+        $this->assertCount(2, $res->json('data'));
     }
 
     // ---------------------------------------------------------------------------
@@ -85,7 +119,18 @@ class RecurringExpenseTest extends TestCase
 
     public function test_update_modifies_template(): void
     {
-        $this->markTestIncomplete('PUT /api/recurring/{id} — implement in Task 3');
+        [$user, $token] = $this->registerAndGetToken();
+        $template       = $this->seedRecurring($user);
+
+        $res = $this->withToken($token)->putJson("/api/recurring/{$template->id}", [
+            'amount' => 200.00,
+        ]);
+
+        $res->assertStatus(200)
+            ->assertJson(['success' => true]);
+
+        // Use assertEquals (not assertJsonPath) to handle int/float JSON casting difference
+        $this->assertEquals(200.0, (float) $res->json('data.amount'));
     }
 
     // ---------------------------------------------------------------------------
@@ -94,7 +139,15 @@ class RecurringExpenseTest extends TestCase
 
     public function test_destroy_removes_template(): void
     {
-        $this->markTestIncomplete('DELETE /api/recurring/{id} — implement in Task 3');
+        [$user, $token] = $this->registerAndGetToken();
+        $template       = $this->seedRecurring($user);
+
+        $this->withToken($token)
+            ->deleteJson("/api/recurring/{$template->id}")
+            ->assertStatus(200)
+            ->assertJson(['success' => true]);
+
+        $this->assertNull(RecurringExpense::find($template->id));
     }
 
     // ---------------------------------------------------------------------------
@@ -103,7 +156,27 @@ class RecurringExpenseTest extends TestCase
 
     public function test_process_creates_due_entry(): void
     {
-        $this->markTestIncomplete('processRecurring() auto-creation — implement in Task 3');
+        [$user, $token] = $this->registerAndGetToken();
+        $category       = $this->seedCategory($user);
+
+        // Template with start_date = yesterday, last_created_date = null → due today
+        $template = RecurringExpense::create([
+            'user_id'           => $user->id,
+            'category_id'       => $category->id,
+            'description'       => 'Daily Coffee',
+            'amount'            => 50.00,
+            'currency'          => 'THB',
+            'frequency'         => 'daily',
+            'start_date'        => Carbon::yesterday()->toDateString(),
+            'last_created_date' => null,
+        ]);
+
+        $this->withToken($token)->getJson('/api/expenses')->assertStatus(200);
+
+        $this->assertTrue(
+            Expense::where('recurring_id', $template->id)->exists(),
+            'processRecurring() should have created an expense entry for the overdue template'
+        );
     }
 
     // ---------------------------------------------------------------------------
@@ -112,7 +185,27 @@ class RecurringExpenseTest extends TestCase
 
     public function test_process_skips_future_template(): void
     {
-        $this->markTestIncomplete('processRecurring() skips future — implement in Task 3');
+        [$user, $token] = $this->registerAndGetToken();
+        $category       = $this->seedCategory($user);
+
+        // Template with last_created_date = today → next_due = tomorrow (daily)
+        $template = RecurringExpense::create([
+            'user_id'           => $user->id,
+            'category_id'       => $category->id,
+            'description'       => 'Daily Skipped',
+            'amount'            => 30.00,
+            'currency'          => 'THB',
+            'frequency'         => 'daily',
+            'start_date'        => Carbon::today()->subDay()->toDateString(),
+            'last_created_date' => Carbon::today()->toDateString(),
+        ]);
+
+        $this->withToken($token)->getJson('/api/expenses')->assertStatus(200);
+
+        $this->assertFalse(
+            Expense::where('recurring_id', $template->id)->exists(),
+            'processRecurring() should NOT create an entry when next_due is in the future'
+        );
     }
 
     // ---------------------------------------------------------------------------
@@ -121,7 +214,30 @@ class RecurringExpenseTest extends TestCase
 
     public function test_process_creates_only_one_entry(): void
     {
-        $this->markTestIncomplete('processRecurring() one entry per load — implement in Task 3');
+        [$user, $token] = $this->registerAndGetToken();
+        $category       = $this->seedCategory($user);
+
+        // Template with last_created_date = 60 days ago (monthly) → many missed periods
+        $template = RecurringExpense::create([
+            'user_id'           => $user->id,
+            'category_id'       => $category->id,
+            'description'       => 'Monthly Rent',
+            'amount'            => 5000.00,
+            'currency'          => 'THB',
+            'frequency'         => 'monthly',
+            'start_date'        => Carbon::today()->subDays(60)->toDateString(),
+            'last_created_date' => Carbon::today()->subDays(60)->toDateString(),
+        ]);
+
+        // First GET /expenses
+        $this->withToken($token)->getJson('/api/expenses')->assertStatus(200);
+        $countAfterFirst = Expense::where('recurring_id', $template->id)->count();
+        $this->assertEquals(1, $countAfterFirst, 'Should create exactly 1 entry even after 60-day absence (D-03)');
+
+        // Second GET /expenses — no duplicate
+        $this->withToken($token)->getJson('/api/expenses')->assertStatus(200);
+        $countAfterSecond = Expense::where('recurring_id', $template->id)->count();
+        $this->assertEquals(1, $countAfterSecond, 'Should not create a second entry on second call (D-02 deduplication)');
     }
 
     // ---------------------------------------------------------------------------
@@ -130,7 +246,28 @@ class RecurringExpenseTest extends TestCase
 
     public function test_future_start_date_not_processed(): void
     {
-        $this->markTestIncomplete('processRecurring() skips future start_date — implement in Task 3');
+        [$user, $token] = $this->registerAndGetToken();
+        $category       = $this->seedCategory($user);
+
+        // Template with start_date = tomorrow → should not be processed yet
+        $template = RecurringExpense::create([
+            'user_id'           => $user->id,
+            'category_id'       => $category->id,
+            'description'       => 'Future Expense',
+            'amount'            => 100.00,
+            'currency'          => 'THB',
+            'frequency'         => 'daily',
+            'start_date'        => Carbon::tomorrow()->toDateString(),
+            'last_created_date' => null,
+        ]);
+
+        $this->withToken($token)->getJson('/api/expenses')->assertStatus(200);
+
+        $this->assertEquals(
+            0,
+            Expense::where('recurring_id', $template->id)->count(),
+            'processRecurring() should skip templates with future start_date'
+        );
     }
 
     // ---------------------------------------------------------------------------
@@ -139,7 +276,35 @@ class RecurringExpenseTest extends TestCase
 
     public function test_delete_template_keeps_expenses(): void
     {
-        $this->markTestIncomplete('DELETE template preserves generated Expense rows — implement in Task 3');
+        [$user, $token] = $this->registerAndGetToken();
+        $template       = $this->seedRecurring($user);
+
+        // Force-create an expense generated by this template
+        $category = $this->seedCategory($user);
+        Expense::create([
+            'user_id'      => $user->id,
+            'category_id'  => $category->id,
+            'description'  => 'Generated',
+            'amount'       => 150.00,
+            'currency'     => 'THB',
+            'expense_date' => Carbon::today()->toDateString(),
+            'is_recurring' => true,
+            'recurring_id' => $template->id,
+        ]);
+
+        // Delete the template
+        $this->withToken($token)
+            ->deleteJson("/api/recurring/{$template->id}")
+            ->assertStatus(200);
+
+        // Template should be gone
+        $this->assertNull(RecurringExpense::find($template->id));
+
+        // Generated expense should still exist
+        $this->assertTrue(
+            Expense::where('recurring_id', $template->id)->exists(),
+            'Deleting a template should not delete generated expense rows'
+        );
     }
 
     // ---------------------------------------------------------------------------
@@ -148,7 +313,22 @@ class RecurringExpenseTest extends TestCase
 
     public function test_ownership_enforced(): void
     {
-        $this->markTestIncomplete('Cross-user ownership guard — implement in Task 3');
+        [$userA, $tokenA] = $this->registerAndGetToken('userA@example.com');
+        [$userB, $tokenB] = $this->registerAndGetToken('userB@example.com');
+
+        // Seed template for userB
+        $template = $this->seedRecurring($userB);
+
+        // userA attempts PUT on userB's template → 404
+        // Use actingAs to bypass JWT guard caching between two registered users
+        $this->actingAs($userA, 'api')
+            ->putJson("/api/recurring/{$template->id}", ['amount' => 999])
+            ->assertStatus(404);
+
+        // userA attempts DELETE on userB's template → 404
+        $this->actingAs($userA, 'api')
+            ->deleteJson("/api/recurring/{$template->id}")
+            ->assertStatus(404);
     }
 
     // ---------------------------------------------------------------------------
@@ -157,6 +337,10 @@ class RecurringExpenseTest extends TestCase
 
     public function test_requires_auth(): void
     {
-        $this->markTestIncomplete('All /api/recurring endpoints require JWT — implement in Task 3');
+        // All /api/recurring endpoints must return 401 without a valid JWT (T-08-06)
+        $this->getJson('/api/recurring')->assertStatus(401);
+        $this->postJson('/api/recurring', [])->assertStatus(401);
+        $this->putJson('/api/recurring/1', [])->assertStatus(401);
+        $this->deleteJson('/api/recurring/1')->assertStatus(401);
     }
 }

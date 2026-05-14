@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BudgetController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\RecurringExpenseController;
 use App\Http\Controllers\Api\AnalyticsController;
 use App\Http\Controllers\Api\ExpenseController;
 use App\Http\Controllers\Api\HealthController;
@@ -49,4 +50,10 @@ Route::middleware('auth:api')->group(function () {
     Route::post  ('budgets',      [BudgetController::class, 'store']);
     Route::put   ('budgets/{id}', [BudgetController::class, 'update']);
     Route::delete('budgets/{id}', [BudgetController::class, 'destroy']);
+
+    // Phase 8: Recurring Expenses (REQ-24)
+    Route::get   ('recurring',      [RecurringExpenseController::class, 'index']);
+    Route::post  ('recurring',      [RecurringExpenseController::class, 'store']);
+    Route::put   ('recurring/{id}', [RecurringExpenseController::class, 'update']);
+    Route::delete('recurring/{id}', [RecurringExpenseController::class, 'destroy']);
 });
