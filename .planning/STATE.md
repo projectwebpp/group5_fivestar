@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Budget & Export Features
 status: executing
-stopped_at: Phase 08 Plan 01 complete — recurring expenses backend shipped
-last_updated: "2026-05-14T02:03:00.000Z"
-last_activity: 2026-05-14 -- Phase 8 Plan 01 executed (recurring expenses backend)
+stopped_at: Phase 08 Plan 02 complete — frontend types and API layer shipped
+last_updated: "2026-05-14T01:46:56Z"
+last_activity: 2026-05-14 -- Phase 8 Plan 02 executed (recurring expenses frontend types + API)
 progress:
   total_phases: 8
   completed_phases: 7
   total_plans: 20
-  completed_plans: 18
-  percent: 90
+  completed_plans: 19
+  percent: 95
 ---
 
 # Project State
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-13)
 
 **Core value:** Users can accurately log and view their monthly expenses by category — and manage budgets
-**Current focus:** Phase 8 — recurring-expenses (Plan 02: frontend RecurringPage)
+**Current focus:** Phase 8 — recurring-expenses (Plan 03: RecurringPage UI + App.tsx wiring)
 
 ## Current Position
 
 Phase: 8 (recurring-expenses) — EXECUTING
-Plan: 2 of 3
-Status: Plan 01 complete — ready for Plan 02 (frontend)
-Last activity: 2026-05-14 -- Phase 8 Plan 01 complete (backend)
+Plan: 3 of 3
+Status: Plan 02 complete — ready for Plan 03 (RecurringPage UI)
+Last activity: 2026-05-14 -- Phase 8 Plan 02 complete (frontend types + API layer)
 
 Progress: [█████████░] 90%
 
@@ -52,6 +52,9 @@ Progress: [█████████░] 90%
 - processRecurring() wrapped in try/catch in index() — broken template never causes 500 on GET /expenses (T-08-07)
 - actingAs($user, 'api') for cross-user ownership tests — withToken() with two users causes JWT guard caching in SQLite test env
 - /api/recurring shape() contract: id, description, category_id, category_name, amount, currency, frequency, start_date, last_created_date, next_due, created_at, updated_at
+- RecurringExpense.currency typed as string (not 'THB' literal) — backend schema is VARCHAR(3), broader type avoids future breakage
+- UpdateRecurringPayload omits currency — only description, category_id, amount, frequency, start_date are updateable per plan spec
+- TypeScript types in types/recurring.ts and api functions in api/recurring.ts — Plan 08-03 imports these directly
 
 ### Pending Todos
 
@@ -66,6 +69,6 @@ Progress: [█████████░] 90%
 
 ## Session Continuity
 
-Last session: 2026-05-14T02:03:00.000Z
-Stopped at: Phase 08 Plan 01 complete — backend done, Plan 02 (frontend) is next
+Last session: 2026-05-14T01:46:56Z
+Stopped at: Phase 08 Plan 02 complete — frontend types and API layer done, Plan 03 (RecurringPage UI) is next
 Resume file: .planning/phases/08-recurring-expenses/.continue-here.md

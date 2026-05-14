@@ -55,7 +55,7 @@ Plans:
 
 Plans:
 - [x] 08-01-PLAN.md — Backend: migration, RecurringExpense model, RecurringExpenseController (CRUD), processRecurring() in ExpenseController, routes, feature tests
-- [ ] 08-02-PLAN.md — Frontend types and API layer: types/recurring.ts, api/recurring.ts
+- [x] 08-02-PLAN.md — Frontend types and API layer: types/recurring.ts, api/recurring.ts
 - [ ] 08-03-PLAN.md — Frontend UI: RecurringPage.tsx with inline form/edit/delete, App.tsx wiring, Recurring nav link on all pages
 
 ## Progress
@@ -69,4 +69,4 @@ Plans:
 | 5. Analytics & Reports | v1.0 | 2/2 | Complete | 2026-05-11 |
 | 6. Budget Management | v2.0 | 3/3 | Complete | 2026-05-13 |
 | 7. CSV Export | v2.0 | 2/2 | Complete | 2026-05-13 |
-| 8. Recurring Expenses | v2.0 | 1/3 | In Progress | — |
+| 8. Recurring Expenses | v2.0 | 2/3 | In Progress | — |
