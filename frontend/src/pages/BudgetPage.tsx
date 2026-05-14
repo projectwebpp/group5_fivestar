@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import Header from '../components/Header';
+import Spinner from '../components/Spinner';
+import { color, font } from '../theme';
 import { getBudgets, createBudget, updateBudget, deleteBudget } from '../api/budgets';
 import type { BudgetRow } from '../types/budget';
 
@@ -46,24 +49,16 @@ export default function BudgetPage() {
   };
 
   return (
-    <div style={{ fontFamily: 'sans-serif', minHeight: '100vh', background: '#F4EFE6', padding: '24px', paddingBottom: 48 }}>
+    <div style={{ fontFamily: font, minHeight: '100vh', background: color.bg, paddingBottom: 64 }}>
 
-      {/* Header + nav */}
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1F1B16', margin: 0 }}>Budget</h1>
-        <nav style={{ display: 'flex', gap: 16 }}>
-          <Link to="/expenses"   style={{ fontSize: 15, fontWeight: 700, color: '#7A7064',              textDecoration: 'none' }}>Expenses</Link>
-          <Link to="/analytics"  style={{ fontSize: 15, fontWeight: 700, color: '#7A7064',              textDecoration: 'none' }}>Analytics</Link>
-          <Link to="/budget"     style={{ fontSize: 15, fontWeight: 700, color: 'oklch(48% 0.10 195)', textDecoration: 'none' }}>Budget</Link>
-          <Link to="/recurring"  style={{ fontSize: 15, fontWeight: 700, color: '#7A7064',              textDecoration: 'none' }}>Recurring</Link>
-        </nav>
-      </header>
+      <Header title="Budget" />
+      <div style={{ maxWidth: 900, margin: '0 auto', padding: '0 24px' }}>
 
       {/* Error */}
       {error && <p style={{ color: '#C0392B', fontSize: 14, marginBottom: 16 }}>{error}</p>}
 
       {/* Loading */}
-      {loading && <p style={{ color: '#7A7064', fontSize: 15 }}>Loading budgets...</p>}
+      {loading && <Spinner />}
 
       {/* Empty state */}
       {!loading && rows.length === 0 && !error && (
@@ -171,6 +166,7 @@ export default function BudgetPage() {
           </table>
         </div>
       )}
+      </div>
     </div>
   );
 }

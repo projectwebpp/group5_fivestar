@@ -5,6 +5,40 @@ import { listCategories } from '../api/categories';
 import type { Category } from '../api/categories';
 import InlineError from '../components/InlineError';
 import LoadingButton from '../components/LoadingButton';
+import Spinner from '../components/Spinner';
+import { color, font, radius, shadow } from '../theme';
+
+function FormField({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div style={{ marginBottom: 20 }}>
+      <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: color.text2, marginBottom: 6 }}>
+        {label}
+      </label>
+      {children}
+    </div>
+  );
+}
+
+const inputStyle = (focused: boolean): React.CSSProperties => ({
+  display: 'block',
+  width: '100%',
+  fontSize: 14,
+  padding: '10px 14px',
+  background: color.surface,
+  border: `1.5px solid ${focused ? color.accent : color.border}`,
+  borderRadius: radius.md,
+  outline: focused ? `3px solid ${color.accentLight}` : 'none',
+  color: color.text1,
+  fontFamily: font,
+  transition: 'border-color 0.15s',
+  boxSizing: 'border-box',
+});
 
 export default function ExpenseFormPage({ mode }: { mode: 'create' | 'edit' }) {
   const { id } = useParams<{ id: string }>();
@@ -20,6 +54,8 @@ export default function ExpenseFormPage({ mode }: { mode: 'create' | 'edit' }) {
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [loadingExpense, setLoadingExpense] = useState(mode === 'edit');
+
+  const [focusedField, setFocusedField] = useState<string | null>(null);
 
   useEffect(() => {
     listCategories()
@@ -56,10 +92,7 @@ export default function ExpenseFormPage({ mode }: { mode: 'create' | 'edit' }) {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    if (mode === 'edit' && !id) {
-      setError('Invalid expense ID.');
-      return;
-    }
+    if (mode === 'edit' && !id) { setError('Invalid expense ID.'); return; }
     const v = validate();
     if (v) { setError(v); return; }
     setError(null);
@@ -80,142 +113,168 @@ export default function ExpenseFormPage({ mode }: { mode: 'create' | 'edit' }) {
       navigate('/expenses');
     } catch (err: unknown) {
       const e = err as { response?: { data?: { errors?: Array<{ message: string }>; message?: string } } };
-      const apiMsg =
+      setError(
         e?.response?.data?.errors?.[0]?.message ??
         e?.response?.data?.message ??
-        'Something went wrong. Please try again.';
-      setError(apiMsg);
+        'Something went wrong. Please try again.',
+      );
     } finally {
       setSaving(false);
     }
   }
 
-  if (loadingExpense) {
-    return <div style={{ fontFamily: 'sans-serif', padding: 24 }}>Loading expense...</div>;
-  }
+  if (loadingExpense) return <Spinner fullPage />;
 
   return (
-    <div style={{ fontFamily: 'sans-serif', minHeight: '100vh', background: '#F4EFE6', padding: 24 }}>
-      <button
-        onClick={() => navigate('/expenses')}
-        style={{ background: 'none', border: 'none', fontSize: 14, color: '#7A7064', cursor: 'pointer', marginBottom: 16 }}
-      >
-        ← Back
-      </button>
-      <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1F1B16', margin: '0 0 24px 0' }}>
-        {mode === 'create' ? 'Add Expense' : 'Edit Expense'}
-      </h1>
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          background: '#FFFCF7',
-          padding: 24,
-          borderRadius: 16,
-          boxShadow: '0 1px 2px rgba(31,27,22,0.04), 0 8px 24px rgba(31,27,22,0.04)',
-        }}
-      >
-        <label style={{ display: 'block', fontSize: 13, color: '#7A7064', marginBottom: 4 }}>Amount</label>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-          <span style={{ fontSize: 36, fontWeight: 700, color: '#1F1B16' }}>฿</span>
-          <input
-            type="number"
-            step="0.01"
-            min="0.01"
-            value={amount}
-            onChange={e => setAmount(e.target.value)}
-            style={{
-              flex: 1,
-              fontSize: 36,
-              fontWeight: 700,
-              color: '#1F1B16',
-              border: 'none',
-              background: 'transparent',
-              outline: 'none',
-            }}
-          />
-        </div>
+    <div style={{ fontFamily: font, minHeight: '100vh', background: color.bg, paddingBottom: 64 }}>
+      <div style={{ maxWidth: 600, margin: '0 auto', padding: '32px 24px' }}>
 
-        <label style={{ display: 'block', fontSize: 13, color: '#7A7064', marginBottom: 4 }}>Category</label>
-        <select
-          value={categoryId}
-          onChange={e => setCategoryId(e.target.value === '' ? '' : Number(e.target.value))}
-          disabled={categoriesLoading}
+        <button
+          onClick={() => navigate('/expenses')}
           style={{
-            width: '100%',
-            fontSize: 15,
-            padding: 8,
-            background: '#EDE7DA',
-            border: '1px solid rgba(31,27,22,0.04)',
-            borderRadius: 8,
-            marginBottom: 16,
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+            background: 'none',
+            border: 'none',
+            fontSize: 13,
+            fontWeight: 500,
+            color: color.text2,
+            cursor: 'pointer',
+            padding: 0,
+            marginBottom: 24,
+            fontFamily: font,
           }}
         >
-          <option value="">{categoriesLoading ? 'Loading categories...' : 'Select a category'}</option>
-          {categories.map(c => (
-            <option key={c.id} value={c.id}>{c.name}</option>
-          ))}
-        </select>
+          ← Back to Expenses
+        </button>
 
-        <label style={{ display: 'block', fontSize: 13, color: '#7A7064', marginBottom: 4 }}>Description</label>
-        <input
-          type="text"
-          value={description}
-          onChange={e => setDescription(e.target.value)}
-          maxLength={255}
+        <h1 style={{ fontSize: 24, fontWeight: 800, color: color.text1, margin: '0 0 24px', letterSpacing: '-0.5px' }}>
+          {mode === 'create' ? 'Add Expense' : 'Edit Expense'}
+        </h1>
+
+        <form
+          onSubmit={handleSubmit}
           style={{
-            width: '100%',
-            fontSize: 15,
-            padding: 8,
-            background: '#EDE7DA',
-            border: '1px solid rgba(31,27,22,0.04)',
-            borderRadius: 8,
-            marginBottom: 16,
+            background: color.surface,
+            padding: 28,
+            borderRadius: radius.xl,
+            boxShadow: shadow.md,
+            border: `1px solid ${color.border}`,
           }}
-        />
+        >
+          {/* Amount */}
+          <div style={{ marginBottom: 24 }}>
+            <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: color.text2, marginBottom: 8 }}>
+              Amount
+            </label>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '8px 14px',
+                background: color.surfaceAlt,
+                borderRadius: radius.lg,
+                border: `1.5px solid ${focusedField === 'amount' ? color.accent : 'transparent'}`,
+                transition: 'border-color 0.15s',
+              }}
+            >
+              <span style={{ fontSize: 32, fontWeight: 700, color: color.text3, lineHeight: 1 }}>฿</span>
+              <input
+                type="number"
+                step="0.01"
+                min="0.01"
+                value={amount}
+                onChange={e => setAmount(e.target.value)}
+                onFocus={() => setFocusedField('amount')}
+                onBlur={() => setFocusedField(null)}
+                placeholder="0.00"
+                style={{
+                  flex: 1,
+                  fontSize: 32,
+                  fontWeight: 700,
+                  color: color.text1,
+                  border: 'none',
+                  background: 'transparent',
+                  outline: 'none',
+                  fontFamily: font,
+                }}
+              />
+            </div>
+          </div>
 
-        <label style={{ display: 'block', fontSize: 13, color: '#7A7064', marginBottom: 4 }}>Date</label>
-        <input
-          type="date"
-          value={date}
-          onChange={e => setDate(e.target.value)}
-          style={{
-            width: '100%',
-            fontSize: 15,
-            padding: 8,
-            background: '#EDE7DA',
-            border: '1px solid rgba(31,27,22,0.04)',
-            borderRadius: 8,
-            marginBottom: 16,
-          }}
-        />
+          <FormField label="Category">
+            <select
+              value={categoryId}
+              onChange={e => setCategoryId(e.target.value === '' ? '' : Number(e.target.value))}
+              disabled={categoriesLoading}
+              onFocus={() => setFocusedField('category')}
+              onBlur={() => setFocusedField(null)}
+              style={{
+                ...inputStyle(focusedField === 'category'),
+                appearance: 'none',
+              }}
+            >
+              <option value="">{categoriesLoading ? 'Loading…' : 'Select a category'}</option>
+              {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
+          </FormField>
 
-        <label style={{ display: 'block', fontSize: 13, color: '#7A7064', marginBottom: 4 }}>Notes (optional)</label>
-        <textarea
-          value={notes}
-          onChange={e => setNotes(e.target.value)}
-          rows={3}
-          maxLength={1000}
-          style={{
-            width: '100%',
-            fontSize: 15,
-            padding: 8,
-            background: '#EDE7DA',
-            border: '1px solid rgba(31,27,22,0.04)',
-            borderRadius: 8,
-            marginBottom: 16,
-            resize: 'vertical',
-            fontFamily: 'inherit',
-          }}
-        />
+          <FormField label="Description">
+            <input
+              type="text"
+              value={description}
+              onChange={e => setDescription(e.target.value)}
+              maxLength={255}
+              placeholder="e.g. Lunch at café"
+              onFocus={() => setFocusedField('description')}
+              onBlur={() => setFocusedField(null)}
+              style={inputStyle(focusedField === 'description')}
+            />
+          </FormField>
 
-        <LoadingButton
-          type="submit"
-          loading={saving}
-          label={mode === 'create' ? 'Save Expense' : 'Save Changes'}
-          loadingLabel="Saving..."
-        />
-        <InlineError message={error} />
-      </form>
+          <FormField label="Date">
+            <input
+              type="date"
+              value={date}
+              onChange={e => setDate(e.target.value)}
+              onFocus={() => setFocusedField('date')}
+              onBlur={() => setFocusedField(null)}
+              style={inputStyle(focusedField === 'date')}
+            />
+          </FormField>
+
+          <FormField label="Notes (optional)">
+            <textarea
+              value={notes}
+              onChange={e => setNotes(e.target.value)}
+              rows={3}
+              maxLength={1000}
+              placeholder="Any additional notes…"
+              onFocus={() => setFocusedField('notes')}
+              onBlur={() => setFocusedField(null)}
+              style={{
+                ...inputStyle(focusedField === 'notes'),
+                resize: 'vertical',
+                minHeight: 80,
+              }}
+            />
+          </FormField>
+
+          <InlineError message={error} />
+
+          <div style={{ marginTop: 24 }}>
+            <LoadingButton
+              type="submit"
+              loading={saving}
+              fullWidth
+              label={mode === 'create' ? 'Save Expense' : 'Save Changes'}
+              loadingLabel="Saving…"
+            />
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

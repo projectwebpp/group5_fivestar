@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import { color, font, radius } from '../theme';
+
 interface PaginationProps {
   page: number;
   totalPages: number;
@@ -5,57 +8,41 @@ interface PaginationProps {
   onNext: () => void;
 }
 
-export default function Pagination({ page, totalPages, onPrev, onNext }: PaginationProps) {
-  const isPrevDisabled = page <= 1;
-  const isNextDisabled = page >= totalPages;
-
-  const buttonBase: React.CSSProperties = {
-    background: '#EDE7DA',
-    color: '#1F1B16',
-    fontWeight: 700,
-    padding: '0 16px',
-    borderRadius: 12,
-    border: 'none',
-    minHeight: 48,
-    cursor: 'pointer',
-  };
-
+function NavBtn({ label, disabled, onClick }: { label: string; disabled: boolean; onClick: () => void }) {
+  const [hovered, setHovered] = useState(false);
   return (
-    <div
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginTop: 16,
+        padding: '8px 18px',
+        background: disabled ? color.surfaceAlt : hovered ? color.accentLight : color.surface,
+        color: disabled ? color.text3 : color.accent,
+        fontWeight: 600,
+        fontSize: 13,
+        fontFamily: font,
+        border: `1.5px solid ${disabled ? color.border : color.accent}`,
+        borderRadius: radius.md,
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        transition: 'background 0.15s',
+        opacity: disabled ? 0.5 : 1,
       }}
     >
-      <button
-        onClick={onPrev}
-        disabled={isPrevDisabled}
-        style={{
-          ...buttonBase,
-          opacity: isPrevDisabled ? 0.4 : 1,
-          cursor: isPrevDisabled ? 'not-allowed' : 'pointer',
-        }}
-      >
-        &#8592; Prev
-      </button>
+      {label}
+    </button>
+  );
+}
 
-      <span style={{ fontSize: 13, color: '#7A7064', fontWeight: 400 }}>
+export default function Pagination({ page, totalPages, onPrev, onNext }: PaginationProps) {
+  return (
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 20, fontFamily: font }}>
+      <NavBtn label="← Prev" disabled={page <= 1} onClick={onPrev} />
+      <span style={{ fontSize: 13, color: color.text2, fontWeight: 500 }}>
         Page {page} of {totalPages}
       </span>
-
-      <button
-        onClick={onNext}
-        disabled={isNextDisabled}
-        style={{
-          ...buttonBase,
-          opacity: isNextDisabled ? 0.4 : 1,
-          cursor: isNextDisabled ? 'not-allowed' : 'pointer',
-        }}
-      >
-        Next &#8594;
-      </button>
+      <NavBtn label="Next →" disabled={page >= totalPages} onClick={onNext} />
     </div>
   );
 }

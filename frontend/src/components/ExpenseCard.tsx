@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import type { Expense } from '../types/expense';
+import { color, font, shadow, radius } from '../theme';
 
 interface ExpenseCardProps {
   expense: Expense;
@@ -7,6 +9,8 @@ interface ExpenseCardProps {
 }
 
 export default function ExpenseCard({ expense, onClick, categoryName }: ExpenseCardProps) {
+  const [hovered, setHovered] = useState(false);
+
   const [year, month, day] = expense.date.split('-').map(Number);
   const formattedDate = new Date(year, month - 1, day).toLocaleDateString('en-GB', {
     day: '2-digit',
@@ -18,29 +22,60 @@ export default function ExpenseCard({ expense, onClick, categoryName }: ExpenseC
       role="button"
       tabIndex={0}
       onClick={onClick}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick(); }}
+      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') onClick(); }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       style={{
-        borderRadius: 16,
-        background: '#FFFCF7',
-        border: '1px solid rgba(31,27,22,0.04)',
-        boxShadow: '0 1px 2px rgba(31,27,22,0.04), 0 8px 24px rgba(31,27,22,0.04)',
-        padding: '16px',
+        borderRadius: radius.lg,
+        background: color.surface,
+        border: `1px solid ${hovered ? color.borderStrong : color.border}`,
+        boxShadow: hovered ? shadow.md : shadow.sm,
+        padding: '14px 20px',
         marginBottom: 8,
         cursor: 'pointer',
-        display: 'flex',
-        justifyContent: 'space-between',
+        display: 'grid',
+        gridTemplateColumns: '1fr auto auto auto',
         alignItems: 'center',
+        gap: 16,
+        fontFamily: font,
+        transform: hovered ? 'translateY(-1px)' : 'translateY(0)',
+        transition: 'transform 0.15s, box-shadow 0.15s, border-color 0.15s',
       }}
     >
-      <span style={{ fontWeight: 700, fontSize: 15, color: '#1F1B16' }}>
-        ฿ {expense.amount.toFixed(2)}
-      </span>
-      <span style={{ fontWeight: 400, fontSize: 15, color: '#7A7064' }}>
-        {categoryName ?? `Category #${expense.category_id}`}
-      </span>
-      <span style={{ fontSize: 13, color: '#7A7064' }}>
+      {/* Description + Category */}
+      <div style={{ overflow: 'hidden' }}>
+        <div style={{ fontWeight: 600, fontSize: 14, color: color.text1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {expense.description}
+        </div>
+        {categoryName && (
+          <div style={{ fontSize: 12, color: color.text3, marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {categoryName}
+          </div>
+        )}
+      </div>
+
+      {/* Amount */}
+      <div style={{ fontWeight: 700, fontSize: 15, color: color.text1, whiteSpace: 'nowrap' }}>
+        ฿{expense.amount.toFixed(2)}
+      </div>
+
+      {/* Date chip */}
+      <div
+        style={{
+          fontSize: 12,
+          fontWeight: 500,
+          color: color.text2,
+          background: color.surfaceAlt,
+          padding: '4px 10px',
+          borderRadius: radius.full,
+          whiteSpace: 'nowrap',
+        }}
+      >
         {formattedDate}
-      </span>
+      </div>
+
+      {/* Arrow */}
+      <div style={{ color: color.text3, fontSize: 14 }}>›</div>
     </div>
   );
 }

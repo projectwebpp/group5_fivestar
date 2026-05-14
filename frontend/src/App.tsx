@@ -13,12 +13,16 @@ function RequireAuth({ children }: { children: React.ReactElement }) {
   return localStorage.getItem('auth_token') ? children : <Navigate to="/auth" replace />;
 }
 
+function RedirectIfAuth({ children }: { children: React.ReactElement }) {
+  return localStorage.getItem('auth_token') ? <Navigate to="/expenses" replace /> : children;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/auth" element={<RedirectIfAuth><AuthPage /></RedirectIfAuth>} />
         <Route path="/expenses"          element={<RequireAuth><ExpensesPage /></RequireAuth>} />
         <Route path="/expenses/new"      element={<RequireAuth><ExpenseFormPage mode="create" /></RequireAuth>} />
         <Route path="/expenses/:id"      element={<RequireAuth><ExpenseDetailPage /></RequireAuth>} />

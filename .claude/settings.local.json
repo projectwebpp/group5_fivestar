@@ -30,7 +30,8 @@
       "Bash(php composer.phar install)",
       "Bash(lsof *)",
       "Bash(kill 2099)",
-      "Bash(kill 2666 2693)"
+      "Bash(kill 2666 2693)",
+      "Bash(npx tsc *)"
     ],
     "defaultMode": "acceptEdits"
   }
