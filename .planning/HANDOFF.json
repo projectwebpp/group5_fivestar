@@ -1,37 +1,67 @@
 {
   "version": "1.0",
-  "timestamp": "2026-05-14T02:09:00.000Z",
-  "phase": "08",
-  "phase_name": "recurring-expenses",
-  "phase_dir": ".planning/phases/08-recurring-expenses",
-  "plan": 3,
-  "task": 3,
-  "total_tasks": 3,
-  "status": "complete",
-  "milestone": "v2.0",
-  "milestone_status": "COMPLETE",
+  "timestamp": "2026-05-14T12:18:30Z",
+  "phase": null,
+  "phase_name": "post-v2.0 — Supabase auth integration",
+  "phase_dir": null,
+  "plan": null,
+  "task": null,
+  "total_tasks": null,
+  "status": "paused",
   "completed_tasks": [
-    {"id": 1, "name": "08-01: Backend — migration, RecurringExpense model, RecurringExpenseController, routes, processRecurring() in ExpenseController::index(), feature tests", "status": "done", "commit": "28df2df"},
-    {"id": 2, "name": "08-02: Frontend types (recurring.ts) + API client (api/recurring.ts)", "status": "done", "commit": "489b044"},
-    {"id": 3, "name": "08-03: RecurringPage.tsx, App.tsx routing, nav links on all 4 pages", "status": "done", "commit": "61153bc"},
-    {"id": 4, "name": "08-03-SUMMARY.md written, STATE.md + ROADMAP.md updated to v2.0 complete", "status": "done", "commit": "a2da0b2"}
+    {"id": 1, "name": "Create Supabase client (frontend/src/api/supabase.ts)", "status": "done", "commit": "4b74a21"},
+    {"id": 2, "name": "Replace Laravel JWT auth with Supabase auth in frontend/src/api/auth.ts", "status": "done", "commit": "4b74a21"},
+    {"id": 3, "name": "Add SupabaseAuthMiddleware to Laravel backend (HS256 JWT verification + auto-provision local user)", "status": "done", "commit": "4b74a21"},
+    {"id": 4, "name": "Swap jwt.auth + auth:api → supabase.auth on all protected routes", "status": "done", "commit": "4b74a21"},
+    {"id": 5, "name": "Fix error handling — normalise all error types to envelope shape", "status": "done", "commit": "26d93c6"}
   ],
   "remaining_tasks": [],
-  "blockers": [],
+  "blockers": [
+    {
+      "description": "SUPABASE_JWT_SECRET not yet set in Railway or backend/.env",
+      "type": "human_action",
+      "workaround": "Get from Supabase dashboard → Project Settings → API → JWT Settings → JWT Secret. Add to Railway env vars AND replace placeholder in backend/.env"
+    },
+    {
+      "description": "Vercel env vars still named NEXT_PUBLIC_* — must be renamed to VITE_*",
+      "type": "human_action",
+      "workaround": "Delete NEXT_PUBLIC_SUPABASE_URL + NEXT_PUBLIC_SUPABASE_ANON_KEY; add VITE_SUPABASE_URL + VITE_SUPABASE_ANON_KEY with same values"
+    },
+    {
+      "description": "26d93c6 not yet pushed to origin/main",
+      "type": "human_action",
+      "workaround": "git push origin main"
+    }
+  ],
   "human_actions_pending": [
     {
-      "action": "Run `php artisan migrate` on Railway MySQL",
-      "context": "budgets and recurring_expenses migrations created in Phase 6/8. Railway does not auto-run migrations. Run from backend directory after connecting to Railway env.",
+      "action": "Rename Vercel env vars: NEXT_PUBLIC_SUPABASE_URL → VITE_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY → VITE_SUPABASE_ANON_KEY",
+      "context": "Vite only exposes VITE_* vars. Wrong prefix = createClient(undefined, undefined) = 'Something went wrong' on every auth call",
+      "blocking": true
+    },
+    {
+      "action": "Add SUPABASE_JWT_SECRET to Railway backend env vars (and backend/.env for local dev)",
+      "context": "SupabaseAuthMiddleware uses config('supabase.jwt_secret') to verify HS256 signature. Without it all tokens fail verification with 'Token invalid'",
+      "blocking": true
+    },
+    {
+      "action": "Redeploy Vercel after env var changes",
+      "context": "Vercel build embeds VITE_* vars at build time — env var changes require a new deploy",
+      "blocking": true
+    },
+    {
+      "action": "git push origin main",
+      "context": "26d93c6 is 1 commit ahead of origin/main",
       "blocking": false
     }
   ],
   "decisions": [
-    {"decision": "processRecurring() wrapped in try/catch in ExpenseController::index()", "rationale": "Blocking constraint — broken template must never 500 GET /expenses", "phase": "08"},
-    {"decision": "RecurringPage mirrors BudgetPage — inline form above table, inline edit, inline delete-confirm (no modal)", "rationale": "D-05/D-06 from 08-CONTEXT.md", "phase": "08"},
-    {"decision": "4-link nav: Expenses | Analytics | Budget | Recurring on all pages", "rationale": "D-11 — Recurring is permanent 4th nav item", "phase": "08"},
-    {"decision": "Sequential executor mode (no worktree isolation) confirmed for this project", "rationale": "Phase 6 and 7 git history show main-branch commits; stale worktree removed at session start", "phase": "08"}
+    {"decision": "Supabase auth replaces Laravel JWT auth on frontend; backend verifies Supabase tokens", "rationale": "User chose 'bypass Laravel auth entirely' — Supabase handles login/register, access token sent to Laravel API", "phase": "post-v2.0"},
+    {"decision": "VITE_ prefix required for env vars (not NEXT_PUBLIC_)", "rationale": "Vite project, not Next.js. NEXT_PUBLIC_ is Next.js-only.", "phase": "post-v2.0"},
+    {"decision": "Supabase URL = base URL only (no /rest/v1/ suffix)", "rationale": "Supabase JS SDK appends paths internally", "phase": "post-v2.0"},
+    {"decision": "SupabaseAuthMiddleware auto-provisions local user + seeds categories on first Supabase login", "rationale": "Laravel data layer uses integer user IDs; Supabase auth uses UUIDs — local row bridges the gap without a separate onboarding step", "phase": "post-v2.0"}
   ],
   "uncommitted_files": [],
-  "next_action": "v2.0 milestone is COMPLETE (20/20 plans). Run `php artisan migrate` on Railway MySQL to activate budgets and recurring_expenses tables in production. Then deploy frontend to Vercel.",
-  "context_notes": "All 8 phases complete. v2.0 ships: budget management (REQ-20/21/22), CSV export (REQ-23), recurring expenses (REQ-24). 6 pre-existing test failures remain (CategoryTest 2, ExpenseApiTest 3, ExampleTest 1) — unrelated to v2.0 work. Deferred code review items: CR-02 (500 on duplicate budget), CR-04 (decimal validation), WR-01 (silent no-op)."
+  "next_action": "User completes human actions: rename Vercel env vars → add SUPABASE_JWT_SECRET to Railway → redeploy → test /auth on production",
+  "context_notes": "All code committed (2 commits this session). Both are in main. Only configuration in Vercel and Railway dashboards remains. Previous v2.0 milestone blockers (Railway migration, Vercel root dir) may also still be pending."
 }
