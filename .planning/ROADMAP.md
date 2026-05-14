@@ -3,7 +3,7 @@
 ## Milestones
 
 - ✅ **v1.0 MVP** — Phases 1–5 (shipped 2026-05-11) — [archive](.planning/milestones/v1.0-ROADMAP.md)
-- 🔄 **v2.0 Budget & Export** — Phases 6–8 (in progress 2026-05-12)
+- ✅ **v2.0 Budget & Export** — Phases 6–8 (shipped 2026-05-14)
 
 ## Phases
 
@@ -45,7 +45,7 @@ Plans:
 - [x] 07-01-PLAN.md — Backend: export() method in ExpenseController, GET /api/expenses/export route
 - [x] 07-02-PLAN.md — Frontend: exportExpenses() API function, Export CSV button and state on ExpensesPage
 
-### 🔄 Phase 8: Recurring Expenses (v2.0) — in progress
+### ✅ Phase 8: Recurring Expenses (v2.0) — completed 2026-05-14
 
 **Goal:** Users can create recurring expense templates (daily/weekly/monthly), view and manage them on a dedicated /recurring page, and have entries auto-created when they load the Expenses page.
 
@@ -56,7 +56,7 @@ Plans:
 Plans:
 - [x] 08-01-PLAN.md — Backend: migration, RecurringExpense model, RecurringExpenseController (CRUD), processRecurring() in ExpenseController, routes, feature tests
 - [x] 08-02-PLAN.md — Frontend types and API layer: types/recurring.ts, api/recurring.ts
-- [ ] 08-03-PLAN.md — Frontend UI: RecurringPage.tsx with inline form/edit/delete, App.tsx wiring, Recurring nav link on all pages
+- [x] 08-03-PLAN.md — Frontend UI: RecurringPage.tsx with inline form/edit/delete, App.tsx wiring, Recurring nav link on all pages
 
 ## Progress
 
@@ -69,4 +69,4 @@ Plans:
 | 5. Analytics & Reports | v1.0 | 2/2 | Complete | 2026-05-11 |
 | 6. Budget Management | v2.0 | 3/3 | Complete | 2026-05-13 |
 | 7. CSV Export | v2.0 | 2/2 | Complete | 2026-05-13 |
-| 8. Recurring Expenses | v2.0 | 2/3 | In Progress | — |
+| 8. Recurring Expenses | v2.0 | 3/3 | Complete | 2026-05-14 |
