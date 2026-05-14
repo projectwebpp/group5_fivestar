@@ -27,11 +27,11 @@ function useIsDesktop() {
   return isDesktop;
 }
 
-function getUserInitials(): string {
-  const email = localStorage.getItem("user_email") ?? "";
-  if (!email) return "?";
-  return email.slice(0, 2).toUpperCase();
-}
+// function getUserInitials(): string {
+//   const email = localStorage.getItem("user_email") ?? "";
+//   if (!email) return "?";
+//   return email.slice(0, 2).toUpperCase();
+// }
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
